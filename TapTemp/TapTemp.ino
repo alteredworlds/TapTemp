@@ -53,6 +53,9 @@
 
 
 // Prototypes
+//==============================================================================
+// Error messages stored in flash.
+#define error(msg) sd.errorHalt(F(msg))
 
 
 // Define variables and constants
@@ -65,6 +68,12 @@ const uint8_t chipSelect = SS;
 // time to acquire and write data to the SD to avoid overrun errors.
 // Run the bench example to check the quality of your SD card.
 const uint32_t SAMPLE_INTERVAL_MS = 200;
+
+// want a minimum logging rate of 1 record per 60 mins to demonstrate 'alive'
+const uint32_t MIN_LOG_INTERVAL_uS = 3600 * 1000000;
+
+// only want to record meaningful changes in analog reading
+const uint16_t MIN_ANALOG_DELTA = 3;
 
 // Log file base name.  Must be six characters or less.
 #define FILE_BASE_NAME "Data"
@@ -83,6 +92,7 @@ uint32_t logTime;
 
 // we have only a single termperature probe right now...
 const uint8_t ANALOG_COUNT = 1;
+uint16_t recordedData[ANALOG_COUNT];
 
 // Write data header.
 void writeHeader() {
@@ -94,28 +104,74 @@ void writeHeader() {
     file.println();
 }
 
-// Log a data record.
-void logData() {
+// Log a data record if we need to
+//    (big enough delta reading OR time interval)
+void logIfAppropriate() {
     uint16_t data[ANALOG_COUNT];
     
-    // Read all channels to avoid SD write latency between readings.
-    for (uint8_t i = 0; i < ANALOG_COUNT; i++) {
+    // Current time in micros
+    uint32_t currentTime = micros();
+    
+    // Read all channels in one go
+    uint8_t i;
+    for (i = 0; i < ANALOG_COUNT; i++) {
         data[i] = analogRead(i);
     }
-    // Write data to file.  Start with log time in micros.
-    file.print(logTime);
-    
-    // Write ADC data to CSV record.
-    for (uint8_t i = 0; i < ANALOG_COUNT; i++) {
-        file.write(',');
-        file.print(data[i]);
+    // compare with most recent recorded values - if the data has changed sufficiently
+    // in any channel we need to write a log record
+    uint16_t diff;
+    boolean shouldWrite = false;
+    for (i = 0; i < ANALOG_COUNT; i++) {
+        diff = recordedData[i] > data[i] ? recordedData[i] - data[i] : data[i] - recordedData[i];
+        shouldWrite = (diff >= MIN_ANALOG_DELTA);
+        if (shouldWrite) {
+            // item at index i has changed enough
+            // => entire record must be written
+            
+            // DEBUG output
+            Serial.print(F("Old value: "));
+            Serial.print(recordedData[i]);
+            Serial.print(F("  New value: "));
+            Serial.print(data[i]);
+            break;
+        }
     }
-    file.println();
+    // if no change, see if last write was too long ago...
+    shouldWrite = shouldWrite || ((currentTime - logTime) >= MIN_LOG_INTERVAL_uS);
+    if (shouldWrite) {
+        // update the recorded values
+        for (i = 0; i < ANALOG_COUNT; i++) {
+            recordedData[i] = data[i];
+        }
+        
+        // write this time
+        file.print(currentTime);
+        
+        // DEBUG output
+        Serial.print(F("Logged: "));
+        
+        // Write ADC data to CSV record.
+        for (uint8_t i = 0; i < ANALOG_COUNT; i++) {
+            file.write(',');
+            file.print(data[i]);
+            
+            // DEBUG output
+            if (i > 0) {
+                Serial.print(',');
+            }
+            Serial.println(data[i]);
+        }
+        file.println();
+        
+        // Force data to SD and update the directory entry to avoid data loss.
+        if (!file.sync() || file.getWriteError()) {
+            error("write error");
+        } else {
+            // all OK: update last logged time
+            logTime = currentTime;
+        }
+    }
 }
-
-//==============================================================================
-// Error messages stored in flash.
-#define error(msg) sd.errorHalt(F(msg))
 
 // Add setup code
 void setup()
@@ -126,9 +182,6 @@ void setup()
     Serial.begin(9600);
     while (!Serial) {} // wait for Leonardo
     delay(1000);
-    
-    Serial.println(F("Type any character to start"));
-    while (!Serial.available()) {}
 
     // Initialize the SD card at SPI_HALF_SPEED to avoid bus errors with
     // breadboards.  use SPI_FULL_SPEED for better performance.
@@ -159,7 +212,6 @@ void setup()
     
     Serial.print(F("Logging to: "));
     Serial.println(fileName);
-    Serial.println(F("Type any character to stop"));
     
     // Write data header.
     writeHeader();
@@ -170,12 +222,18 @@ void setup()
     // Init. and start BLE library.
     ble_begin();
     
-    // Start on a multiple of the sample interval.
-    logTime = micros()/(1000UL*SAMPLE_INTERVAL_MS) + 1;
-    logTime *= 1000UL*SAMPLE_INTERVAL_MS;
+    // set data to zero (necessary?)
+    for (uint16_t i = 0; i < ANALOG_COUNT; i++) {
+        recordedData[i] = 0;
+    }
+    
+    // last logged time set 0 => initial time based write
+    logTime = 0;
 }
 
 void loop() {
+    logIfAppropriate();
+    
     // send out any outstanding data
     ble_do_events();
 }
