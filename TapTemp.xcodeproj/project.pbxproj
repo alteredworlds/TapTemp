@@ -1,0 +1,705 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5FD53CF11C159C1000256CC6 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FD53CF01C159C1000256CC6 /* main.cpp */; };
+		5FD53CF31C159C1000256CC6 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 5FD53CF21C159C1000256CC6 /* Makefile */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		5FD53CED1C159C1000256CC6 /* Index */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Index; sourceTree = BUILT_PRODUCTS_DIR; };
+		5FD53CF01C159C1000256CC6 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		5FD53CF21C159C1000256CC6 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		5FD53CF41C159C1000256CC6 /* ReadMe.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
+		5FD53CF61C159C1000256CC6 /* Sketchbook.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = Sketchbook.txt; path = Sketchbook/Sketchbook.txt; sourceTree = "<group>"; };
+		5FD53CF81C159C1000256CC6 /* 4D Systems PICadillo 35T.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "4D Systems PICadillo 35T.xcconfig"; path = "Configurations/4D Systems PICadillo 35T.xcconfig"; sourceTree = "<group>"; };
+		5FD53CF91C159C1000256CC6 /* Adafruit ATmega32U4 (USBtinyISP).xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Adafruit ATmega32U4 (USBtinyISP).xcconfig"; path = "Configurations/Adafruit ATmega32U4 (USBtinyISP).xcconfig"; sourceTree = "<group>"; };
+		5FD53CFA1C159C1000256CC6 /* Adafruit Pro Trinket 3V-12MHz.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Adafruit Pro Trinket 3V-12MHz.xcconfig"; path = "Configurations/Adafruit Pro Trinket 3V-12MHz.xcconfig"; sourceTree = "<group>"; };
+		5FD53CFB1C159C1000256CC6 /* Adafruit Pro Trinket 5V-16MHz.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Adafruit Pro Trinket 5V-16MHz.xcconfig"; path = "Configurations/Adafruit Pro Trinket 5V-16MHz.xcconfig"; sourceTree = "<group>"; };
+		5FD53CFC1C159C1000256CC6 /* Adafruit Trinket 3V-8MHz.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Adafruit Trinket 3V-8MHz.xcconfig"; path = "Configurations/Adafruit Trinket 3V-8MHz.xcconfig"; sourceTree = "<group>"; };
+		5FD53CFD1C159C1000256CC6 /* Adafruit Trinket 5V-16MHz.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Adafruit Trinket 5V-16MHz.xcconfig"; path = "Configurations/Adafruit Trinket 5V-16MHz.xcconfig"; sourceTree = "<group>"; };
+		5FD53CFE1C159C1000256CC6 /* Arduino Due (Native USB Port).xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Arduino Due (Native USB Port).xcconfig"; path = "Configurations/Arduino Due (Native USB Port).xcconfig"; sourceTree = "<group>"; };
+		5FD53CFF1C159C1000256CC6 /* Arduino Due (Programming Port).xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Arduino Due (Programming Port).xcconfig"; path = "Configurations/Arduino Due (Programming Port).xcconfig"; sourceTree = "<group>"; };
+		5FD53D001C159C1000256CC6 /* Arduino Duemilanove.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Arduino Duemilanove.xcconfig"; path = "Configurations/Arduino Duemilanove.xcconfig"; sourceTree = "<group>"; };
+		5FD53D011C159C1000256CC6 /* Arduino Leonardo.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Arduino Leonardo.xcconfig"; path = "Configurations/Arduino Leonardo.xcconfig"; sourceTree = "<group>"; };
+		5FD53D021C159C1000256CC6 /* Arduino Mega 2560.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Arduino Mega 2560.xcconfig"; path = "Configurations/Arduino Mega 2560.xcconfig"; sourceTree = "<group>"; };
+		5FD53D031C159C1000256CC6 /* Arduino Micro.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Arduino Micro.xcconfig"; path = "Configurations/Arduino Micro.xcconfig"; sourceTree = "<group>"; };
+		5FD53D041C159C1000256CC6 /* Arduino Pro ATmega328-3.3V.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Arduino Pro ATmega328-3.3V.xcconfig"; path = "Configurations/Arduino Pro ATmega328-3.3V.xcconfig"; sourceTree = "<group>"; };
+		5FD53D051C159C1000256CC6 /* Arduino Pro ATmega328-5V.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Arduino Pro ATmega328-5V.xcconfig"; path = "Configurations/Arduino Pro ATmega328-5V.xcconfig"; sourceTree = "<group>"; };
+		5FD53D061C159C1000256CC6 /* Arduino Mini ATmega168.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Arduino Mini ATmega168.xcconfig"; path = "Configurations/Arduino Mini ATmega168.xcconfig"; sourceTree = "<group>"; };
+		5FD53D071C159C1000256CC6 /* Arduino Mini ATmega328.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Arduino Mini ATmega328.xcconfig"; path = "Configurations/Arduino Mini ATmega328.xcconfig"; sourceTree = "<group>"; };
+		5FD53D081C159C1000256CC6 /* Arduino Nano ATmega168.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Arduino Nano ATmega168.xcconfig"; path = "Configurations/Arduino Nano ATmega168.xcconfig"; sourceTree = "<group>"; };
+		5FD53D091C159C1000256CC6 /* Arduino Nano ATmega328.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Arduino Nano ATmega328.xcconfig"; path = "Configurations/Arduino Nano ATmega328.xcconfig"; sourceTree = "<group>"; };
+		5FD53D0A1C159C1000256CC6 /* Arduino Robot Control.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Arduino Robot Control.xcconfig"; path = "Configurations/Arduino Robot Control.xcconfig"; sourceTree = "<group>"; };
+		5FD53D0B1C159C1000256CC6 /* Arduino Robot Motor.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Arduino Robot Motor.xcconfig"; path = "Configurations/Arduino Robot Motor.xcconfig"; sourceTree = "<group>"; };
+		5FD53D0C1C159C1000256CC6 /* Arduino Uno.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Arduino Uno.xcconfig"; path = "Configurations/Arduino Uno.xcconfig"; sourceTree = "<group>"; };
+		5FD53D0D1C159C1000256CC6 /* Arduino Uno (USBtinyISP).xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Arduino Uno (USBtinyISP).xcconfig"; path = "Configurations/Arduino Uno (USBtinyISP).xcconfig"; sourceTree = "<group>"; };
+		5FD53D0E1C159C1000256CC6 /* Arduino Yun.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Arduino Yun.xcconfig"; path = "Configurations/Arduino Yun.xcconfig"; sourceTree = "<group>"; };
+		5FD53D0F1C159C1000256CC6 /* Arduino Yun (WiFi Ethernet).xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Arduino Yun (WiFi Ethernet).xcconfig"; path = "Configurations/Arduino Yun (WiFi Ethernet).xcconfig"; sourceTree = "<group>"; };
+		5FD53D101C159C1000256CC6 /* ArduinoORG M0 Pro (Native USB Port).xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "ArduinoORG M0 Pro (Native USB Port).xcconfig"; path = "Configurations/ArduinoORG M0 Pro (Native USB Port).xcconfig"; sourceTree = "<group>"; };
+		5FD53D111C159C1000256CC6 /* ArduinoORG M0 Pro (Programming Port).xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "ArduinoORG M0 Pro (Programming Port).xcconfig"; path = "Configurations/ArduinoORG M0 Pro (Programming Port).xcconfig"; sourceTree = "<group>"; };
+		5FD53D121C159C1000256CC6 /* chipKIT DP32.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "chipKIT DP32.xcconfig"; path = "Configurations/chipKIT DP32.xcconfig"; sourceTree = "<group>"; };
+		5FD53D131C159C1000256CC6 /* chipKIT Max32.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "chipKIT Max32.xcconfig"; path = "Configurations/chipKIT Max32.xcconfig"; sourceTree = "<group>"; };
+		5FD53D141C159C1000256CC6 /* chipKIT uC32.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "chipKIT uC32.xcconfig"; path = "Configurations/chipKIT uC32.xcconfig"; sourceTree = "<group>"; };
+		5FD53D151C159C1000256CC6 /* chipKIT Uno32.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "chipKIT Uno32.xcconfig"; path = "Configurations/chipKIT Uno32.xcconfig"; sourceTree = "<group>"; };
+		5FD53D161C159C1000256CC6 /* chipKIT Uno32 (PGM).xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "chipKIT Uno32 (PGM).xcconfig"; path = "Configurations/chipKIT Uno32 (PGM).xcconfig"; sourceTree = "<group>"; };
+		5FD53D171C159C1000256CC6 /* chipKIT WF32.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "chipKIT WF32.xcconfig"; path = "Configurations/chipKIT WF32.xcconfig"; sourceTree = "<group>"; };
+		5FD53D181C159C1000256CC6 /* chipKIT WiFire.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "chipKIT WiFire.xcconfig"; path = "Configurations/chipKIT WiFire.xcconfig"; sourceTree = "<group>"; };
+		5FD53D191C159C1000256CC6 /* DFRobot BLuno.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "DFRobot BLuno.xcconfig"; path = "Configurations/DFRobot BLuno.xcconfig"; sourceTree = "<group>"; };
+		5FD53D1A1C159C1000256CC6 /* DFRobot Wido.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "DFRobot Wido.xcconfig"; path = "Configurations/DFRobot Wido.xcconfig"; sourceTree = "<group>"; };
+		5FD53D1B1C159C1000256CC6 /* Digispark Tiny Core.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Digispark Tiny Core.xcconfig"; path = "Configurations/Digispark Tiny Core.xcconfig"; sourceTree = "<group>"; };
+		5FD53D1C1C159C1000256CC6 /* ESP8266.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = ESP8266.xcconfig; path = Configurations/ESP8266.xcconfig; sourceTree = "<group>"; };
+		5FD53D1D1C159C1000256CC6 /* NodeMCU 0.9 ESP-12.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "NodeMCU 0.9 ESP-12.xcconfig"; path = "Configurations/NodeMCU 0.9 ESP-12.xcconfig"; sourceTree = "<group>"; };
+		5FD53D1E1C159C1000256CC6 /* NodeMCU 1.0 ESP-12E.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "NodeMCU 1.0 ESP-12E.xcconfig"; path = "Configurations/NodeMCU 1.0 ESP-12E.xcconfig"; sourceTree = "<group>"; };
+		5FD53D1F1C159C1000256CC6 /* Experimeter Board MSP430FR5739.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Experimeter Board MSP430FR5739.xcconfig"; path = "Configurations/Experimeter Board MSP430FR5739.xcconfig"; sourceTree = "<group>"; };
+		5FD53D201C159C1000256CC6 /* Intel Edison.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Intel Edison.xcconfig"; path = "Configurations/Intel Edison.xcconfig"; sourceTree = "<group>"; };
+		5FD53D211C159C1000256CC6 /* Intel Edison (WiFi).xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Intel Edison (WiFi).xcconfig"; path = "Configurations/Intel Edison (WiFi).xcconfig"; sourceTree = "<group>"; };
+		5FD53D221C159C1000256CC6 /* Intel Galileo.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Intel Galileo.xcconfig"; path = "Configurations/Intel Galileo.xcconfig"; sourceTree = "<group>"; };
+		5FD53D231C159C1000256CC6 /* Intel Galileo Gen2.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Intel Galileo Gen2.xcconfig"; path = "Configurations/Intel Galileo Gen2.xcconfig"; sourceTree = "<group>"; };
+		5FD53D241C159C1000256CC6 /* LaunchPad MSP432P401 EMT.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "LaunchPad MSP432P401 EMT.xcconfig"; path = "Configurations/LaunchPad MSP432P401 EMT.xcconfig"; sourceTree = "<group>"; };
+		5FD53D251C159C1000256CC6 /* LaunchPad CC3200 WiFi.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "LaunchPad CC3200 WiFi.xcconfig"; path = "Configurations/LaunchPad CC3200 WiFi.xcconfig"; sourceTree = "<group>"; };
+		5FD53D261C159C1000256CC6 /* LaunchPad CC3200 WiFi EMT.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "LaunchPad CC3200 WiFi EMT.xcconfig"; path = "Configurations/LaunchPad CC3200 WiFi EMT.xcconfig"; sourceTree = "<group>"; };
+		5FD53D271C159C1000256CC6 /* LaunchPad LM4F120 Stellaris.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "LaunchPad LM4F120 Stellaris.xcconfig"; path = "Configurations/LaunchPad LM4F120 Stellaris.xcconfig"; sourceTree = "<group>"; };
+		5FD53D281C159C1000256CC6 /* LaunchPad TM4C123 Tiva C.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "LaunchPad TM4C123 Tiva C.xcconfig"; path = "Configurations/LaunchPad TM4C123 Tiva C.xcconfig"; sourceTree = "<group>"; };
+		5FD53D291C159C1000256CC6 /* LaunchPad TM4C129 Connected.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "LaunchPad TM4C129 Connected.xcconfig"; path = "Configurations/LaunchPad TM4C129 Connected.xcconfig"; sourceTree = "<group>"; };
+		5FD53D2A1C159C1000256CC6 /* LaunchPad MSP430G2231.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "LaunchPad MSP430G2231.xcconfig"; path = "Configurations/LaunchPad MSP430G2231.xcconfig"; sourceTree = "<group>"; };
+		5FD53D2B1C159C1000256CC6 /* LaunchPad MSP430G2452.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "LaunchPad MSP430G2452.xcconfig"; path = "Configurations/LaunchPad MSP430G2452.xcconfig"; sourceTree = "<group>"; };
+		5FD53D2C1C159C1000256CC6 /* LaunchPad MSP430G2553.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "LaunchPad MSP430G2553.xcconfig"; path = "Configurations/LaunchPad MSP430G2553.xcconfig"; sourceTree = "<group>"; };
+		5FD53D2D1C159C1000256CC6 /* LaunchPad MSP430F5529.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "LaunchPad MSP430F5529.xcconfig"; path = "Configurations/LaunchPad MSP430F5529.xcconfig"; sourceTree = "<group>"; };
+		5FD53D2E1C159C1000256CC6 /* LaunchPad MSP430FR4133.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "LaunchPad MSP430FR4133.xcconfig"; path = "Configurations/LaunchPad MSP430FR4133.xcconfig"; sourceTree = "<group>"; };
+		5FD53D2F1C159C1000256CC6 /* LaunchPad MSP430FR5969.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "LaunchPad MSP430FR5969.xcconfig"; path = "Configurations/LaunchPad MSP430FR5969.xcconfig"; sourceTree = "<group>"; };
+		5FD53D301C159C1000256CC6 /* LaunchPad MSP430FR6989.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "LaunchPad MSP430FR6989.xcconfig"; path = "Configurations/LaunchPad MSP430FR6989.xcconfig"; sourceTree = "<group>"; };
+		5FD53D311C159C1000256CC6 /* Little Robot Friends.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Little Robot Friends.xcconfig"; path = "Configurations/Little Robot Friends.xcconfig"; sourceTree = "<group>"; };
+		5FD53D321C159C1000256CC6 /* Maple Flash revision 3+.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Maple Flash revision 3+.xcconfig"; path = "Configurations/Maple Flash revision 3+.xcconfig"; sourceTree = "<group>"; };
+		5FD53D331C159C1000256CC6 /* Maple RAM revision 3+.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Maple RAM revision 3+.xcconfig"; path = "Configurations/Maple RAM revision 3+.xcconfig"; sourceTree = "<group>"; };
+		5FD53D341C159C1000256CC6 /* Microduino Core STM32 Flash.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Microduino Core STM32 Flash.xcconfig"; path = "Configurations/Microduino Core STM32 Flash.xcconfig"; sourceTree = "<group>"; };
+		5FD53D351C159C1000256CC6 /* Microduino Core STM32 RAM.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Microduino Core STM32 RAM.xcconfig"; path = "Configurations/Microduino Core STM32 RAM.xcconfig"; sourceTree = "<group>"; };
+		5FD53D361C159C1000256CC6 /* Microduino Core USB ATmega328U4-5V.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Microduino Core USB ATmega328U4-5V.xcconfig"; path = "Configurations/Microduino Core USB ATmega328U4-5V.xcconfig"; sourceTree = "<group>"; };
+		5FD53D371C159C1000256CC6 /* Microduino Core ATmega328-5V.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Microduino Core ATmega328-5V.xcconfig"; path = "Configurations/Microduino Core ATmega328-5V.xcconfig"; sourceTree = "<group>"; };
+		5FD53D381C159C1000256CC6 /* Microduino Core+ ATmega644-5V.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Microduino Core+ ATmega644-5V.xcconfig"; path = "Configurations/Microduino Core+ ATmega644-5V.xcconfig"; sourceTree = "<group>"; };
+		5FD53D391C159C1000256CC6 /* panStamp AVR.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "panStamp AVR.xcconfig"; path = "Configurations/panStamp AVR.xcconfig"; sourceTree = "<group>"; };
+		5FD53D3A1C159C1000256CC6 /* panStamp NRG 1.0.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "panStamp NRG 1.0.xcconfig"; path = "Configurations/panStamp NRG 1.0.xcconfig"; sourceTree = "<group>"; };
+		5FD53D3B1C159C1000256CC6 /* panStamp NRG 1.1.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "panStamp NRG 1.1.xcconfig"; path = "Configurations/panStamp NRG 1.1.xcconfig"; sourceTree = "<group>"; };
+		5FD53D3C1C159C1000256CC6 /* Protostack ATmega328 (USBASP).xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Protostack ATmega328 (USBASP).xcconfig"; path = "Configurations/Protostack ATmega328 (USBASP).xcconfig"; sourceTree = "<group>"; };
+		5FD53D3D1C159C1000256CC6 /* Protostack ATmega328 (USBtinyISP).xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Protostack ATmega328 (USBtinyISP).xcconfig"; path = "Configurations/Protostack ATmega328 (USBtinyISP).xcconfig"; sourceTree = "<group>"; };
+		5FD53D3E1C159C1000256CC6 /* RedBearLab BLE Nano.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "RedBearLab BLE Nano.xcconfig"; path = "Configurations/RedBearLab BLE Nano.xcconfig"; sourceTree = "<group>"; };
+		5FD53D3F1C159C1000256CC6 /* RedBearLab nRF51822.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "RedBearLab nRF51822.xcconfig"; path = "Configurations/RedBearLab nRF51822.xcconfig"; sourceTree = "<group>"; };
+		5FD53D401C159C1000256CC6 /* RedBearLab WiFi CC3200.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "RedBearLab WiFi CC3200.xcconfig"; path = "Configurations/RedBearLab WiFi CC3200.xcconfig"; sourceTree = "<group>"; };
+		5FD53D411C159C1000256CC6 /* RedBearLab WiFi CC3200 EMT.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "RedBearLab WiFi CC3200 EMT.xcconfig"; path = "Configurations/RedBearLab WiFi CC3200 EMT.xcconfig"; sourceTree = "<group>"; };
+		5FD53D421C159C1000256CC6 /* RedBearLab WiFi Mini CC3200.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "RedBearLab WiFi Mini CC3200.xcconfig"; path = "Configurations/RedBearLab WiFi Mini CC3200.xcconfig"; sourceTree = "<group>"; };
+		5FD53D431C159C1000256CC6 /* RedBearLab WiFi Mini CC3200 EMT.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "RedBearLab WiFi Mini CC3200 EMT.xcconfig"; path = "Configurations/RedBearLab WiFi Mini CC3200 EMT.xcconfig"; sourceTree = "<group>"; };
+		5FD53D441C159C1000256CC6 /* Teensy 2.0.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Teensy 2.0.xcconfig"; path = "Configurations/Teensy 2.0.xcconfig"; sourceTree = "<group>"; };
+		5FD53D451C159C1000256CC6 /* Teensy 3.0.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Teensy 3.0.xcconfig"; path = "Configurations/Teensy 3.0.xcconfig"; sourceTree = "<group>"; };
+		5FD53D461C159C1000256CC6 /* Teensy 3.1.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Teensy 3.1.xcconfig"; path = "Configurations/Teensy 3.1.xcconfig"; sourceTree = "<group>"; };
+		5FD53D471C159C1000256CC6 /* Teensy LC.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Teensy LC.xcconfig"; path = "Configurations/Teensy LC.xcconfig"; sourceTree = "<group>"; };
+		5FD53D481C159C1000256CC6 /* Wiring S.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Wiring S.xcconfig"; path = "Configurations/Wiring S.xcconfig"; sourceTree = "<group>"; };
+		5FD53D4A1C159C1000256CC6 /* AdafruitAVR_165.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = AdafruitAVR_165.mk; path = Makefiles/AdafruitAVR_165.mk; sourceTree = "<group>"; };
+		5FD53D4B1C159C1000256CC6 /* ArduinoAVR_165.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = ArduinoAVR_165.mk; path = Makefiles/ArduinoAVR_165.mk; sourceTree = "<group>"; };
+		5FD53D4C1C159C1000256CC6 /* ArduinoAVR_177.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = ArduinoAVR_177.mk; path = Makefiles/ArduinoAVR_177.mk; sourceTree = "<group>"; };
+		5FD53D4D1C159C1000256CC6 /* ArduinoSAM_165.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = ArduinoSAM_165.mk; path = Makefiles/ArduinoSAM_165.mk; sourceTree = "<group>"; };
+		5FD53D4E1C159C1000256CC6 /* ArduinoSAM_177.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = ArduinoSAM_177.mk; path = Makefiles/ArduinoSAM_177.mk; sourceTree = "<group>"; };
+		5FD53D4F1C159C1000256CC6 /* ArduinoSAMD_165.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = ArduinoSAMD_165.mk; path = Makefiles/ArduinoSAMD_165.mk; sourceTree = "<group>"; };
+		5FD53D501C159C1000256CC6 /* ArduinoSAMD_177.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = ArduinoSAMD_177.mk; path = Makefiles/ArduinoSAMD_177.mk; sourceTree = "<group>"; };
+		5FD53D511C159C1000256CC6 /* DigisparkAVR_165.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = DigisparkAVR_165.mk; path = Makefiles/DigisparkAVR_165.mk; sourceTree = "<group>"; };
+		5FD53D521C159C1000256CC6 /* EnergiaMSP430.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = EnergiaMSP430.mk; path = Makefiles/EnergiaMSP430.mk; sourceTree = "<group>"; };
+		5FD53D531C159C1000256CC6 /* EnergiaMSP432EMT.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = EnergiaMSP432EMT.mk; path = Makefiles/EnergiaMSP432EMT.mk; sourceTree = "<group>"; };
+		5FD53D541C159C1000256CC6 /* EnergiaLM4F.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = EnergiaLM4F.mk; path = Makefiles/EnergiaLM4F.mk; sourceTree = "<group>"; };
+		5FD53D551C159C1000256CC6 /* EnergiaCC3200.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = EnergiaCC3200.mk; path = Makefiles/EnergiaCC3200.mk; sourceTree = "<group>"; };
+		5FD53D561C159C1000256CC6 /* EnergiaCC3200EMT.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = EnergiaCC3200EMT.mk; path = Makefiles/EnergiaCC3200EMT.mk; sourceTree = "<group>"; };
+		5FD53D571C159C1000256CC6 /* Edison_165.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = Edison_165.mk; path = Makefiles/Edison_165.mk; sourceTree = "<group>"; };
+		5FD53D581C159C1000256CC6 /* Galileo_165.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = Galileo_165.mk; path = Makefiles/Galileo_165.mk; sourceTree = "<group>"; };
+		5FD53D591C159C1000256CC6 /* ESP8266_165.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = ESP8266_165.mk; path = Makefiles/ESP8266_165.mk; sourceTree = "<group>"; };
+		5FD53D5A1C159C1000256CC6 /* MapleIDE.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = MapleIDE.mk; path = Makefiles/MapleIDE.mk; sourceTree = "<group>"; };
+		5FD53D5B1C159C1000256CC6 /* LittleRobotFriends_165.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = LittleRobotFriends_165.mk; path = Makefiles/LittleRobotFriends_165.mk; sourceTree = "<group>"; };
+		5FD53D5C1C159C1000256CC6 /* RedBearLabAVR_165.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = RedBearLabAVR_165.mk; path = Makefiles/RedBearLabAVR_165.mk; sourceTree = "<group>"; };
+		5FD53D5D1C159C1000256CC6 /* RedBearLabNRF_165.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = RedBearLabNRF_165.mk; path = Makefiles/RedBearLabNRF_165.mk; sourceTree = "<group>"; };
+		5FD53D5E1C159C1000256CC6 /* Microduino_16.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = Microduino_16.mk; path = Makefiles/Microduino_16.mk; sourceTree = "<group>"; };
+		5FD53D5F1C159C1000256CC6 /* Mpide.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = Mpide.mk; path = Makefiles/Mpide.mk; sourceTree = "<group>"; };
+		5FD53D601C159C1000256CC6 /* panStampAVR_165.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = panStampAVR_165.mk; path = Makefiles/panStampAVR_165.mk; sourceTree = "<group>"; };
+		5FD53D611C159C1000256CC6 /* panStampNRG_165.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = panStampNRG_165.mk; path = Makefiles/panStampNRG_165.mk; sourceTree = "<group>"; };
+		5FD53D621C159C1000256CC6 /* Wiring.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = Wiring.mk; path = Makefiles/Wiring.mk; sourceTree = "<group>"; };
+		5FD53D631C159C1000256CC6 /* About.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = About.mk; path = Makefiles/About.mk; sourceTree = "<group>"; };
+		5FD53D641C159C1000256CC6 /* Step1.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = Step1.mk; path = Makefiles/Step1.mk; sourceTree = "<group>"; };
+		5FD53D651C159C1000256CC6 /* Step2.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = Step2.mk; path = Makefiles/Step2.mk; sourceTree = "<group>"; };
+		5FD53D661C159C1000256CC6 /* Teensy.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = Teensy.mk; path = Makefiles/Teensy.mk; sourceTree = "<group>"; };
+		5FD53D671C159C1000256CC6 /* Teensy2.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = Teensy2.mk; path = Makefiles/Teensy2.mk; sourceTree = "<group>"; };
+		5FD53D681C159C1000256CC6 /* Teensy3.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = Teensy3.mk; path = Makefiles/Teensy3.mk; sourceTree = "<group>"; };
+		5FD53D691C159C1000256CC6 /* Avrdude.mk */ = {isa = PBXFileReference; lastKnownFileType = text; name = Avrdude.mk; path = Makefiles/Avrdude.mk; sourceTree = "<group>"; };
+		5FD53D6B1C159C1000256CC6 /* About.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = About.txt; path = About/About.txt; sourceTree = "<group>"; };
+		5FD53D6D1C159C1000256CC6 /* reset_maple.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = reset_maple.py; path = Utilities/reset_maple.py; sourceTree = "<group>"; };
+		5FD53D6E1C159C1000256CC6 /* reset_1200.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = reset_1200.py; path = Utilities/reset_1200.py; sourceTree = "<group>"; };
+		5FD53D6F1C159C1000256CC6 /* embedXcode_prepare */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = embedXcode_prepare; path = Utilities/embedXcode_prepare; sourceTree = "<group>"; };
+		5FD53D701C159C1000256CC6 /* embedXcode_check */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = embedXcode_check; path = Utilities/embedXcode_check; sourceTree = "<group>"; };
+		5FD53D711C159C1000256CC6 /* embedXcode_chrono */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = embedXcode_chrono; path = Utilities/embedXcode_chrono; sourceTree = "<group>"; };
+		5FD53D721C159C1000256CC6 /* TemplateIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = TemplateIcon.icns; path = Utilities/TemplateIcon.icns; sourceTree = "<group>"; };
+		5FD53D731C159C1000256CC6 /* uploader_izmir.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = uploader_izmir.sh; path = Utilities/uploader_izmir.sh; sourceTree = "<group>"; };
+		5FD53D741C159C1000256CC6 /* TapTemp.ino */ = {isa = PBXFileReference; lastKnownFileType = text; path = TapTemp.ino; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		5FD53CE11C159C1000256CC6 = {
+			isa = PBXGroup;
+			children = (
+				5FD53CEF1C159C1000256CC6 /* TapTemp */,
+				5FD53CEE1C159C1000256CC6 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5FD53CEE1C159C1000256CC6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5FD53CED1C159C1000256CC6 /* Index */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5FD53CEF1C159C1000256CC6 /* TapTemp */ = {
+			isa = PBXGroup;
+			children = (
+				5FD53CF01C159C1000256CC6 /* main.cpp */,
+				5FD53CF21C159C1000256CC6 /* Makefile */,
+				5FD53CF41C159C1000256CC6 /* ReadMe.txt */,
+				5FD53D741C159C1000256CC6 /* TapTemp.ino */,
+				5FD53CF51C159C1000256CC6 /* Sketchbook */,
+				5FD53CF71C159C1000256CC6 /* Configurations */,
+				5FD53D491C159C1000256CC6 /* Makefiles */,
+				5FD53D6A1C159C1000256CC6 /* About */,
+				5FD53D6C1C159C1000256CC6 /* Utilities */,
+			);
+			path = TapTemp;
+			sourceTree = "<group>";
+		};
+		5FD53CF51C159C1000256CC6 /* Sketchbook */ = {
+			isa = PBXGroup;
+			children = (
+				5FD53CF61C159C1000256CC6 /* Sketchbook.txt */,
+			);
+			name = Sketchbook;
+			sourceTree = "<group>";
+		};
+		5FD53CF71C159C1000256CC6 /* Configurations */ = {
+			isa = PBXGroup;
+			children = (
+				5FD53CF81C159C1000256CC6 /* 4D Systems PICadillo 35T.xcconfig */,
+				5FD53CF91C159C1000256CC6 /* Adafruit ATmega32U4 (USBtinyISP).xcconfig */,
+				5FD53CFA1C159C1000256CC6 /* Adafruit Pro Trinket 3V-12MHz.xcconfig */,
+				5FD53CFB1C159C1000256CC6 /* Adafruit Pro Trinket 5V-16MHz.xcconfig */,
+				5FD53CFC1C159C1000256CC6 /* Adafruit Trinket 3V-8MHz.xcconfig */,
+				5FD53CFD1C159C1000256CC6 /* Adafruit Trinket 5V-16MHz.xcconfig */,
+				5FD53CFE1C159C1000256CC6 /* Arduino Due (Native USB Port).xcconfig */,
+				5FD53CFF1C159C1000256CC6 /* Arduino Due (Programming Port).xcconfig */,
+				5FD53D001C159C1000256CC6 /* Arduino Duemilanove.xcconfig */,
+				5FD53D011C159C1000256CC6 /* Arduino Leonardo.xcconfig */,
+				5FD53D021C159C1000256CC6 /* Arduino Mega 2560.xcconfig */,
+				5FD53D031C159C1000256CC6 /* Arduino Micro.xcconfig */,
+				5FD53D041C159C1000256CC6 /* Arduino Pro ATmega328-3.3V.xcconfig */,
+				5FD53D051C159C1000256CC6 /* Arduino Pro ATmega328-5V.xcconfig */,
+				5FD53D061C159C1000256CC6 /* Arduino Mini ATmega168.xcconfig */,
+				5FD53D071C159C1000256CC6 /* Arduino Mini ATmega328.xcconfig */,
+				5FD53D081C159C1000256CC6 /* Arduino Nano ATmega168.xcconfig */,
+				5FD53D091C159C1000256CC6 /* Arduino Nano ATmega328.xcconfig */,
+				5FD53D0A1C159C1000256CC6 /* Arduino Robot Control.xcconfig */,
+				5FD53D0B1C159C1000256CC6 /* Arduino Robot Motor.xcconfig */,
+				5FD53D0C1C159C1000256CC6 /* Arduino Uno.xcconfig */,
+				5FD53D0D1C159C1000256CC6 /* Arduino Uno (USBtinyISP).xcconfig */,
+				5FD53D0E1C159C1000256CC6 /* Arduino Yun.xcconfig */,
+				5FD53D0F1C159C1000256CC6 /* Arduino Yun (WiFi Ethernet).xcconfig */,
+				5FD53D101C159C1000256CC6 /* ArduinoORG M0 Pro (Native USB Port).xcconfig */,
+				5FD53D111C159C1000256CC6 /* ArduinoORG M0 Pro (Programming Port).xcconfig */,
+				5FD53D121C159C1000256CC6 /* chipKIT DP32.xcconfig */,
+				5FD53D131C159C1000256CC6 /* chipKIT Max32.xcconfig */,
+				5FD53D141C159C1000256CC6 /* chipKIT uC32.xcconfig */,
+				5FD53D151C159C1000256CC6 /* chipKIT Uno32.xcconfig */,
+				5FD53D161C159C1000256CC6 /* chipKIT Uno32 (PGM).xcconfig */,
+				5FD53D171C159C1000256CC6 /* chipKIT WF32.xcconfig */,
+				5FD53D181C159C1000256CC6 /* chipKIT WiFire.xcconfig */,
+				5FD53D191C159C1000256CC6 /* DFRobot BLuno.xcconfig */,
+				5FD53D1A1C159C1000256CC6 /* DFRobot Wido.xcconfig */,
+				5FD53D1B1C159C1000256CC6 /* Digispark Tiny Core.xcconfig */,
+				5FD53D1C1C159C1000256CC6 /* ESP8266.xcconfig */,
+				5FD53D1D1C159C1000256CC6 /* NodeMCU 0.9 ESP-12.xcconfig */,
+				5FD53D1E1C159C1000256CC6 /* NodeMCU 1.0 ESP-12E.xcconfig */,
+				5FD53D1F1C159C1000256CC6 /* Experimeter Board MSP430FR5739.xcconfig */,
+				5FD53D201C159C1000256CC6 /* Intel Edison.xcconfig */,
+				5FD53D211C159C1000256CC6 /* Intel Edison (WiFi).xcconfig */,
+				5FD53D221C159C1000256CC6 /* Intel Galileo.xcconfig */,
+				5FD53D231C159C1000256CC6 /* Intel Galileo Gen2.xcconfig */,
+				5FD53D241C159C1000256CC6 /* LaunchPad MSP432P401 EMT.xcconfig */,
+				5FD53D251C159C1000256CC6 /* LaunchPad CC3200 WiFi.xcconfig */,
+				5FD53D261C159C1000256CC6 /* LaunchPad CC3200 WiFi EMT.xcconfig */,
+				5FD53D271C159C1000256CC6 /* LaunchPad LM4F120 Stellaris.xcconfig */,
+				5FD53D281C159C1000256CC6 /* LaunchPad TM4C123 Tiva C.xcconfig */,
+				5FD53D291C159C1000256CC6 /* LaunchPad TM4C129 Connected.xcconfig */,
+				5FD53D2A1C159C1000256CC6 /* LaunchPad MSP430G2231.xcconfig */,
+				5FD53D2B1C159C1000256CC6 /* LaunchPad MSP430G2452.xcconfig */,
+				5FD53D2C1C159C1000256CC6 /* LaunchPad MSP430G2553.xcconfig */,
+				5FD53D2D1C159C1000256CC6 /* LaunchPad MSP430F5529.xcconfig */,
+				5FD53D2E1C159C1000256CC6 /* LaunchPad MSP430FR4133.xcconfig */,
+				5FD53D2F1C159C1000256CC6 /* LaunchPad MSP430FR5969.xcconfig */,
+				5FD53D301C159C1000256CC6 /* LaunchPad MSP430FR6989.xcconfig */,
+				5FD53D311C159C1000256CC6 /* Little Robot Friends.xcconfig */,
+				5FD53D321C159C1000256CC6 /* Maple Flash revision 3+.xcconfig */,
+				5FD53D331C159C1000256CC6 /* Maple RAM revision 3+.xcconfig */,
+				5FD53D341C159C1000256CC6 /* Microduino Core STM32 Flash.xcconfig */,
+				5FD53D351C159C1000256CC6 /* Microduino Core STM32 RAM.xcconfig */,
+				5FD53D361C159C1000256CC6 /* Microduino Core USB ATmega328U4-5V.xcconfig */,
+				5FD53D371C159C1000256CC6 /* Microduino Core ATmega328-5V.xcconfig */,
+				5FD53D381C159C1000256CC6 /* Microduino Core+ ATmega644-5V.xcconfig */,
+				5FD53D391C159C1000256CC6 /* panStamp AVR.xcconfig */,
+				5FD53D3A1C159C1000256CC6 /* panStamp NRG 1.0.xcconfig */,
+				5FD53D3B1C159C1000256CC6 /* panStamp NRG 1.1.xcconfig */,
+				5FD53D3C1C159C1000256CC6 /* Protostack ATmega328 (USBASP).xcconfig */,
+				5FD53D3D1C159C1000256CC6 /* Protostack ATmega328 (USBtinyISP).xcconfig */,
+				5FD53D3E1C159C1000256CC6 /* RedBearLab BLE Nano.xcconfig */,
+				5FD53D3F1C159C1000256CC6 /* RedBearLab nRF51822.xcconfig */,
+				5FD53D401C159C1000256CC6 /* RedBearLab WiFi CC3200.xcconfig */,
+				5FD53D411C159C1000256CC6 /* RedBearLab WiFi CC3200 EMT.xcconfig */,
+				5FD53D421C159C1000256CC6 /* RedBearLab WiFi Mini CC3200.xcconfig */,
+				5FD53D431C159C1000256CC6 /* RedBearLab WiFi Mini CC3200 EMT.xcconfig */,
+				5FD53D441C159C1000256CC6 /* Teensy 2.0.xcconfig */,
+				5FD53D451C159C1000256CC6 /* Teensy 3.0.xcconfig */,
+				5FD53D461C159C1000256CC6 /* Teensy 3.1.xcconfig */,
+				5FD53D471C159C1000256CC6 /* Teensy LC.xcconfig */,
+				5FD53D481C159C1000256CC6 /* Wiring S.xcconfig */,
+			);
+			name = Configurations;
+			sourceTree = "<group>";
+		};
+		5FD53D491C159C1000256CC6 /* Makefiles */ = {
+			isa = PBXGroup;
+			children = (
+				5FD53D4A1C159C1000256CC6 /* AdafruitAVR_165.mk */,
+				5FD53D4B1C159C1000256CC6 /* ArduinoAVR_165.mk */,
+				5FD53D4C1C159C1000256CC6 /* ArduinoAVR_177.mk */,
+				5FD53D4D1C159C1000256CC6 /* ArduinoSAM_165.mk */,
+				5FD53D4E1C159C1000256CC6 /* ArduinoSAM_177.mk */,
+				5FD53D4F1C159C1000256CC6 /* ArduinoSAMD_165.mk */,
+				5FD53D501C159C1000256CC6 /* ArduinoSAMD_177.mk */,
+				5FD53D511C159C1000256CC6 /* DigisparkAVR_165.mk */,
+				5FD53D521C159C1000256CC6 /* EnergiaMSP430.mk */,
+				5FD53D531C159C1000256CC6 /* EnergiaMSP432EMT.mk */,
+				5FD53D541C159C1000256CC6 /* EnergiaLM4F.mk */,
+				5FD53D551C159C1000256CC6 /* EnergiaCC3200.mk */,
+				5FD53D561C159C1000256CC6 /* EnergiaCC3200EMT.mk */,
+				5FD53D571C159C1000256CC6 /* Edison_165.mk */,
+				5FD53D581C159C1000256CC6 /* Galileo_165.mk */,
+				5FD53D591C159C1000256CC6 /* ESP8266_165.mk */,
+				5FD53D5A1C159C1000256CC6 /* MapleIDE.mk */,
+				5FD53D5B1C159C1000256CC6 /* LittleRobotFriends_165.mk */,
+				5FD53D5C1C159C1000256CC6 /* RedBearLabAVR_165.mk */,
+				5FD53D5D1C159C1000256CC6 /* RedBearLabNRF_165.mk */,
+				5FD53D5E1C159C1000256CC6 /* Microduino_16.mk */,
+				5FD53D5F1C159C1000256CC6 /* Mpide.mk */,
+				5FD53D601C159C1000256CC6 /* panStampAVR_165.mk */,
+				5FD53D611C159C1000256CC6 /* panStampNRG_165.mk */,
+				5FD53D621C159C1000256CC6 /* Wiring.mk */,
+				5FD53D631C159C1000256CC6 /* About.mk */,
+				5FD53D641C159C1000256CC6 /* Step1.mk */,
+				5FD53D651C159C1000256CC6 /* Step2.mk */,
+				5FD53D661C159C1000256CC6 /* Teensy.mk */,
+				5FD53D671C159C1000256CC6 /* Teensy2.mk */,
+				5FD53D681C159C1000256CC6 /* Teensy3.mk */,
+				5FD53D691C159C1000256CC6 /* Avrdude.mk */,
+			);
+			name = Makefiles;
+			sourceTree = "<group>";
+		};
+		5FD53D6A1C159C1000256CC6 /* About */ = {
+			isa = PBXGroup;
+			children = (
+				5FD53D6B1C159C1000256CC6 /* About.txt */,
+			);
+			name = About;
+			sourceTree = "<group>";
+		};
+		5FD53D6C1C159C1000256CC6 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				5FD53D6D1C159C1000256CC6 /* reset_maple.py */,
+				5FD53D6E1C159C1000256CC6 /* reset_1200.py */,
+				5FD53D6F1C159C1000256CC6 /* embedXcode_prepare */,
+				5FD53D701C159C1000256CC6 /* embedXcode_check */,
+				5FD53D711C159C1000256CC6 /* embedXcode_chrono */,
+				5FD53D721C159C1000256CC6 /* TemplateIcon.icns */,
+				5FD53D731C159C1000256CC6 /* uploader_izmir.sh */,
+			);
+			name = Utilities;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		5FD53CE61C159C1000256CC6 /* All */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "all -C \"$(PROJECT)\"";
+			buildConfigurationList = 5FD53D771C159C1000256CC6 /* Build configuration list for PBXLegacyTarget "All" */;
+			buildPhases = (
+			);
+			buildToolPath = make;
+			dependencies = (
+			);
+			name = All;
+			passBuildSettingsInEnvironment = 1;
+			productName = All;
+		};
+		5FD53CE71C159C1000256CC6 /* Build */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "build -C \"$(PROJECT)\"";
+			buildConfigurationList = 5FD53D7A1C159C1000256CC6 /* Build configuration list for PBXLegacyTarget "Build" */;
+			buildPhases = (
+			);
+			buildToolPath = make;
+			dependencies = (
+			);
+			name = Build;
+			passBuildSettingsInEnvironment = 1;
+			productName = Build;
+		};
+		5FD53CE81C159C1000256CC6 /* Boards */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "boards -C \"$(PROJECT)\"";
+			buildConfigurationList = 5FD53D7D1C159C1000256CC6 /* Build configuration list for PBXLegacyTarget "Boards" */;
+			buildPhases = (
+			);
+			buildToolPath = make;
+			dependencies = (
+			);
+			name = Boards;
+			passBuildSettingsInEnvironment = 1;
+			productName = Boards;
+		};
+		5FD53CE91C159C1000256CC6 /* Serial */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "serial -C \"$(PROJECT)\"";
+			buildConfigurationList = 5FD53D801C159C1000256CC6 /* Build configuration list for PBXLegacyTarget "Serial" */;
+			buildPhases = (
+			);
+			buildToolPath = make;
+			dependencies = (
+			);
+			name = Serial;
+			passBuildSettingsInEnvironment = 1;
+			productName = Serial;
+		};
+		5FD53CEA1C159C1000256CC6 /* Upload */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "upload -C \"$(PROJECT)\"";
+			buildConfigurationList = 5FD53D831C159C1000256CC6 /* Build configuration list for PBXLegacyTarget "Upload" */;
+			buildPhases = (
+			);
+			buildToolPath = make;
+			dependencies = (
+			);
+			name = Upload;
+			passBuildSettingsInEnvironment = 1;
+			productName = Upload;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXNativeTarget section */
+		5FD53CEC1C159C1000256CC6 /* Index */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5FD53D861C159C1000256CC6 /* Build configuration list for PBXNativeTarget "Index" */;
+			buildPhases = (
+				5FD53CEB1C159C1000256CC6 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Index;
+			productName = Index;
+			productReference = 5FD53CED1C159C1000256CC6 /* Index */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5FD53CE21C159C1000256CC6 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0710;
+				ORGANIZATIONNAME = "Tom Gilbert";
+				TargetAttributes = {
+					5FD53CE61C159C1000256CC6 = {
+						CreatedOnToolsVersion = 7.1.1;
+					};
+					5FD53CE71C159C1000256CC6 = {
+						CreatedOnToolsVersion = 7.1.1;
+					};
+					5FD53CE81C159C1000256CC6 = {
+						CreatedOnToolsVersion = 7.1.1;
+					};
+					5FD53CE91C159C1000256CC6 = {
+						CreatedOnToolsVersion = 7.1.1;
+					};
+					5FD53CEA1C159C1000256CC6 = {
+						CreatedOnToolsVersion = 7.1.1;
+					};
+					5FD53CEC1C159C1000256CC6 = {
+						CreatedOnToolsVersion = 7.1.1;
+					};
+				};
+			};
+			buildConfigurationList = 5FD53CE51C159C1000256CC6 /* Build configuration list for PBXProject "TapTemp" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 5FD53CE11C159C1000256CC6;
+			productRefGroup = 5FD53CEE1C159C1000256CC6 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5FD53CE61C159C1000256CC6 /* All */,
+				5FD53CE71C159C1000256CC6 /* Build */,
+				5FD53CE81C159C1000256CC6 /* Boards */,
+				5FD53CE91C159C1000256CC6 /* Serial */,
+				5FD53CEA1C159C1000256CC6 /* Upload */,
+				5FD53CEC1C159C1000256CC6 /* Index */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5FD53CEB1C159C1000256CC6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5FD53CF31C159C1000256CC6 /* Makefile in Sources */,
+				5FD53CF11C159C1000256CC6 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		5FD53D751C159C1000256CC6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5FD53D0C1C159C1000256CC6 /* Arduino Uno.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PATH = "$(PATH):$(PROJECT_DIR)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKETCHBOOK_DIR = "";
+				UPDATE_POLICY = 0;
+			};
+			name = Debug;
+		};
+		5FD53D761C159C1000256CC6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PATH = "$(PATH):$(PROJECT_DIR)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKETCHBOOK_DIR = "";
+				UPDATE_POLICY = 0;
+			};
+			name = Release;
+		};
+		5FD53D781C159C1000256CC6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		5FD53D791C159C1000256CC6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		5FD53D7B1C159C1000256CC6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		5FD53D7C1C159C1000256CC6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		5FD53D7E1C159C1000256CC6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		5FD53D7F1C159C1000256CC6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		5FD53D811C159C1000256CC6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		5FD53D821C159C1000256CC6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		5FD53D841C159C1000256CC6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		5FD53D851C159C1000256CC6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		5FD53D871C159C1000256CC6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		5FD53D881C159C1000256CC6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5FD53CE51C159C1000256CC6 /* Build configuration list for PBXProject "TapTemp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5FD53D751C159C1000256CC6 /* Debug */,
+				5FD53D761C159C1000256CC6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5FD53D771C159C1000256CC6 /* Build configuration list for PBXLegacyTarget "All" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5FD53D781C159C1000256CC6 /* Debug */,
+				5FD53D791C159C1000256CC6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		5FD53D7A1C159C1000256CC6 /* Build configuration list for PBXLegacyTarget "Build" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5FD53D7B1C159C1000256CC6 /* Debug */,
+				5FD53D7C1C159C1000256CC6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		5FD53D7D1C159C1000256CC6 /* Build configuration list for PBXLegacyTarget "Boards" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5FD53D7E1C159C1000256CC6 /* Debug */,
+				5FD53D7F1C159C1000256CC6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		5FD53D801C159C1000256CC6 /* Build configuration list for PBXLegacyTarget "Serial" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5FD53D811C159C1000256CC6 /* Debug */,
+				5FD53D821C159C1000256CC6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		5FD53D831C159C1000256CC6 /* Build configuration list for PBXLegacyTarget "Upload" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5FD53D841C159C1000256CC6 /* Debug */,
+				5FD53D851C159C1000256CC6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		5FD53D861C159C1000256CC6 /* Build configuration list for PBXNativeTarget "Index" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5FD53D871C159C1000256CC6 /* Debug */,
+				5FD53D881C159C1000256CC6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5FD53CE21C159C1000256CC6 /* Project object */;
+}
