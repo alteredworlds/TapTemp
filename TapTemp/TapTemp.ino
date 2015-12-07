@@ -73,7 +73,9 @@ const uint32_t SAMPLE_INTERVAL_MS = 200;
 const uint32_t MIN_LOG_INTERVAL_uS = 3600 * 1000000;
 
 // only want to record meaningful changes in analog reading
-const uint16_t MIN_ANALOG_DELTA = 3;
+const uint16_t MIN_ANALOG_DELTA = 5;
+
+boolean fileOpen = false;
 
 // Log file base name.  Must be six characters or less.
 #define FILE_BASE_NAME "Data"
@@ -107,6 +109,9 @@ void writeHeader() {
 // Log a data record if we need to
 //    (big enough delta reading OR time interval)
 void logIfAppropriate() {
+    if (!file.isOpen()) {
+        return;
+    }
     uint16_t data[ANALOG_COUNT];
     
     // Current time in micros
@@ -148,7 +153,7 @@ void logIfAppropriate() {
         file.print(currentTime);
         
         // DEBUG output
-        Serial.print(F("Logged: "));
+        Serial.print(F("  Logged: "));
         
         // Write ADC data to CSV record.
         for (uint8_t i = 0; i < ANALOG_COUNT; i++) {
@@ -169,6 +174,32 @@ void logIfAppropriate() {
         } else {
             // all OK: update last logged time
             logTime = currentTime;
+        }
+    }
+}
+
+void handleBleCommands() {
+    while (ble_available()) {
+        byte cmd;
+        cmd = ble_read();
+        
+        // DEBUG output
+        Serial.print(F("Ble Command received: "));
+        Serial.println(cmd);
+        
+        // Parse data here
+        switch (cmd) {
+            case 'V': // should be query protocol version
+            // but falling through to close the file
+            case 'C': {
+                if (file.isOpen()) {
+                    file.close();
+                    
+                    // DEBUG output
+                    Serial.println(F("Closed file"));
+                }
+            }
+            break;
         }
     }
 }
@@ -234,53 +265,8 @@ void setup()
 void loop() {
     logIfAppropriate();
     
+    handleBleCommands();
+    
     // send out any outstanding data
     ble_do_events();
 }
-
-//// Add loop code
-//void loop() {
-//    // Time for next record.
-//    logTime += 1000UL*SAMPLE_INTERVAL_MS;
-//    
-//    // any BLE commands waiting to be processed?
-//    while (ble_available()) {
-//        byte cmd;
-//        cmd = ble_read();
-//        Serial.write(cmd);
-//        
-//        // Parse data here
-//        switch (cmd) {
-//            default:
-//                break;
-//        }
-//    };
-//    
-//    // Wait for log time.
-//    int32_t diff;
-//    do {
-//        diff = micros() - logTime;
-//    } while (diff < 0);
-//    
-//    // Check for data rate too high.
-//    if (diff > 10) {
-//        error("Missed data record");
-//    }
-//    
-//    logData();
-//    
-//    // Force data to SD and update the directory entry to avoid data loss.
-//    if (!file.sync() || file.getWriteError()) {
-//        error("write error");
-//    }
-//    
-//    // send out any outstanding data
-//    ble_do_events();
-//    
-//    if (false) { //Serial.available()) {
-//        // Close file and stop.
-//        file.close();
-//        Serial.println(F("Done"));
-//        while(1) {}
-//    }
-//}
