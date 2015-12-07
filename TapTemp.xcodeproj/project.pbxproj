@@ -2923,6 +2923,10 @@
 		5FD53D781C159C1000256CC6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					"$(inherited)",
+					"$(PATH):$(PROJECT_DIR)/Sketchbook/Libraries/**",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;

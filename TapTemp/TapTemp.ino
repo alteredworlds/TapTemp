@@ -48,7 +48,8 @@
 
 // Include application, user and local libraries
 #include <SPI.h>
-#include "SdFat.h"
+#include <SdFat.h>
+#include <RBL_nRF8001.h>
 
 
 // Prototypes
@@ -125,7 +126,7 @@ void setup()
     Serial.begin(9600);
     while (!Serial) {} // wait for Leonardo
     delay(1000);
-
+    
     Serial.println(F("Type any character to start"));
     while (!Serial.available()) {}
 
@@ -163,38 +164,65 @@ void setup()
     // Write data header.
     writeHeader();
     
+    // Set BLE Shield name here, max. length 10
+    ble_set_name("AWTAP00001");
+
+    // Init. and start BLE library.
+    ble_begin();
+    
     // Start on a multiple of the sample interval.
     logTime = micros()/(1000UL*SAMPLE_INTERVAL_MS) + 1;
     logTime *= 1000UL*SAMPLE_INTERVAL_MS;
 }
 
-// Add loop code
 void loop() {
-    // Time for next record.
-    logTime += 1000UL*SAMPLE_INTERVAL_MS;
-    
-    // Wait for log time.
-    int32_t diff;
-    do {
-        diff = micros() - logTime;
-    } while (diff < 0);
-    
-    // Check for data rate too high.
-    if (diff > 10) {
-        error("Missed data record");
-    }
-    
-    logData();
-    
-    // Force data to SD and update the directory entry to avoid data loss.
-    if (!file.sync() || file.getWriteError()) {
-        error("write error");
-    }
-    
-    if (Serial.available()) {
-        // Close file and stop.
-        file.close();
-        Serial.println(F("Done"));
-        while(1) {}
-    }
+    // send out any outstanding data
+    ble_do_events();
 }
+
+//// Add loop code
+//void loop() {
+//    // Time for next record.
+//    logTime += 1000UL*SAMPLE_INTERVAL_MS;
+//    
+//    // any BLE commands waiting to be processed?
+//    while (ble_available()) {
+//        byte cmd;
+//        cmd = ble_read();
+//        Serial.write(cmd);
+//        
+//        // Parse data here
+//        switch (cmd) {
+//            default:
+//                break;
+//        }
+//    };
+//    
+//    // Wait for log time.
+//    int32_t diff;
+//    do {
+//        diff = micros() - logTime;
+//    } while (diff < 0);
+//    
+//    // Check for data rate too high.
+//    if (diff > 10) {
+//        error("Missed data record");
+//    }
+//    
+//    logData();
+//    
+//    // Force data to SD and update the directory entry to avoid data loss.
+//    if (!file.sync() || file.getWriteError()) {
+//        error("write error");
+//    }
+//    
+//    // send out any outstanding data
+//    ble_do_events();
+//    
+//    if (false) { //Serial.available()) {
+//        // Close file and stop.
+//        file.close();
+//        Serial.println(F("Done"));
+//        while(1) {}
+//    }
+//}
