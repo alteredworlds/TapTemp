@@ -26,7 +26,7 @@
 #	LiquidCrystal Robot_Control Robot_Motor RobotIRremote SD Servo 
 #	SpacebrewYun Stepper Temboo TFT WiFi 
 #
-APP_LIBS_LIST = SPI EEPROM
+APP_LIBS_LIST = EEPROM SPI
 
 # List user's libraries here 
 # default = 0 = none

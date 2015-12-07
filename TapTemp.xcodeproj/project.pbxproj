@@ -535,7 +535,6 @@
 		5FD53D721C159C1000256CC6 /* TemplateIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = TemplateIcon.icns; path = Utilities/TemplateIcon.icns; sourceTree = "<group>"; };
 		5FD53D731C159C1000256CC6 /* uploader_izmir.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = uploader_izmir.sh; path = Utilities/uploader_izmir.sh; sourceTree = "<group>"; };
 		5FD53D741C159C1000256CC6 /* TapTemp.ino */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; path = TapTemp.ino; sourceTree = "<group>"; };
-		5FD53D8C1C15AAAC00256CC6 /* Libraries */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Libraries; path = Sketchbook/Libraries; sourceTree = "<group>"; };
 		AAAA151207110813AA000006 /* abi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = abi.cpp; sourceTree = "<group>"; };
 		AAAA151207110813AA000007 /* Arduino.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Arduino.h; sourceTree = "<group>"; };
 		AAAA151207110813AA000008 /* binary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = binary.h; sourceTree = "<group>"; };
@@ -972,7 +971,6 @@
 		5FD53CF51C159C1000256CC6 /* Sketchbook */ = {
 			isa = PBXGroup;
 			children = (
-				5FD53D8C1C15AAAC00256CC6 /* Libraries */,
 				5FD53CF61C159C1000256CC6 /* Sketchbook.txt */,
 			);
 			name = Sketchbook;
@@ -2923,10 +2921,6 @@
 		5FD53D781C159C1000256CC6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(inherited)",
-					"$(PATH):$(PROJECT_DIR)/Sketchbook/Libraries/**",
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
