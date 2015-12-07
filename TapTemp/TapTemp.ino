@@ -69,11 +69,14 @@ const uint8_t chipSelect = SS;
 // Run the bench example to check the quality of your SD card.
 const uint32_t SAMPLE_INTERVAL_MS = 200;
 
-// want a minimum logging rate of 1 record per 60 mins to demonstrate 'alive'
-const uint32_t MIN_LOG_INTERVAL_uS = 3600 * 1000000;
+// want at least 200ms between log entries
+const uint32_t MIN_LOG_INTERVAL_uS = 200 * 1000UL;
+
+// want at least 1 record per 60 mins to demonstrate 'alive'
+const uint32_t MAX_LOG_INTERVAL_uS = 3600 * 1000000UL;
 
 // only want to record meaningful changes in analog reading
-const uint16_t MIN_ANALOG_DELTA = 5;
+const uint16_t MIN_ANALOG_DELTA = 2;
 
 boolean fileOpen = false;
 
@@ -108,9 +111,9 @@ void writeHeader() {
 
 // Log a data record if we need to
 //    (big enough delta reading OR time interval)
-void logIfAppropriate() {
+boolean logIfAppropriate() {
     if (!file.isOpen()) {
-        return;
+        return false;
     }
     uint16_t data[ANALOG_COUNT];
     
@@ -125,25 +128,27 @@ void logIfAppropriate() {
     // compare with most recent recorded values - if the data has changed sufficiently
     // in any channel we need to write a log record
     uint16_t diff;
-    boolean shouldWrite = false;
+    boolean writeData = false;
     for (i = 0; i < ANALOG_COUNT; i++) {
         diff = recordedData[i] > data[i] ? recordedData[i] - data[i] : data[i] - recordedData[i];
-        shouldWrite = (diff >= MIN_ANALOG_DELTA);
-        if (shouldWrite) {
+        writeData = (diff > MIN_ANALOG_DELTA);
+        if (writeData) {
             // item at index i has changed enough
             // => entire record must be written
             
             // DEBUG output
-            Serial.print(F("Old value: "));
-            Serial.print(recordedData[i]);
-            Serial.print(F("  New value: "));
-            Serial.print(data[i]);
+//            Serial.print(F("Old value: "));
+//            Serial.print(recordedData[i]);
+//            Serial.print(F("  New value: "));
+//            Serial.print(data[i]);
             break;
         }
     }
-    // if no change, see if last write was too long ago...
-    shouldWrite = shouldWrite || ((currentTime - logTime) >= MIN_LOG_INTERVAL_uS);
-    if (shouldWrite) {
+    
+    uint32_t diffTime = currentTime - logTime;
+    writeData = (writeData && (diffTime > MIN_LOG_INTERVAL_uS)) ||
+                    (diffTime >= MAX_LOG_INTERVAL_uS);
+    if (writeData) {
         // update the recorded values
         for (i = 0; i < ANALOG_COUNT; i++) {
             recordedData[i] = data[i];
@@ -176,9 +181,11 @@ void logIfAppropriate() {
             logTime = currentTime;
         }
     }
+    return writeData;
 }
 
-void handleBleCommands() {
+boolean handleBleCommands() {
+    boolean retVal = false;
     while (ble_available()) {
         byte cmd;
         cmd = ble_read();
@@ -186,6 +193,8 @@ void handleBleCommands() {
         // DEBUG output
         Serial.print(F("Ble Command received: "));
         Serial.println(cmd);
+        
+        retVal = true; // we have handled a command
         
         // Parse data here
         switch (cmd) {
@@ -202,6 +211,7 @@ void handleBleCommands() {
             break;
         }
     }
+    return retVal;
 }
 
 // Add setup code
@@ -248,7 +258,7 @@ void setup()
     writeHeader();
     
     // Set BLE Shield name here, max. length 10
-    ble_set_name("AWTAP00001");
+    ble_set_name("AW_TAP_01");
 
     // Init. and start BLE library.
     ble_begin();
@@ -263,10 +273,9 @@ void setup()
 }
 
 void loop() {
-    logIfAppropriate();
+    // we want to try handlingBleCommands if we didn't log in this loop
+    logIfAppropriate() || handleBleCommands();
     
-    handleBleCommands();
-    
-    // send out any outstanding data
+    // in any case, need to process outstanding BLE events (e.g.: send data)
     ble_do_events();
 }
