@@ -79,7 +79,7 @@ const uint32_t MIN_LOG_INTERVAL_uS = 1000 * 1000UL;
 const uint32_t MAX_LOG_INTERVAL_uS = 3600 * 1000000UL;
 
 // only want to record meaningful changes in analog reading
-const uint16_t MIN_ANALOG_DELTA = 2;
+const uint16_t MIN_ANALOG_DELTA = 3;
 
 boolean fileOpen = false;
 
@@ -143,76 +143,78 @@ uint32_t getTime() {
 // Log a data record if we need to
 //    (big enough delta reading OR time interval)
 boolean logIfAppropriate() {
-    if (!file.isOpen()) {
-        return false;
-    }
-    uint16_t data[ANALOG_COUNT];
-    
-    // Current time in micros
-    uint32_t currentTime = micros();
-    
-    // Read all channels in one go
-    uint8_t i;
-    for (i = 0; i < ANALOG_COUNT; i++) {
-        data[i] = analogRead(i);
-    }
-    // compare with most recent recorded values - if the data has changed sufficiently
-    // in any channel we need to write a log record
-    uint16_t diff;
     boolean writeData = false;
-    for (i = 0; i < ANALOG_COUNT; i++) {
-        diff = recordedData[i] > data[i] ? recordedData[i] - data[i] : data[i] - recordedData[i];
-        writeData = (diff > MIN_ANALOG_DELTA);
-        if (writeData) {
-            // item at index i has changed enough
-            // => entire record must be written
-            
-            // DEBUG output
-//            Serial.print(F("Old value: "));
-//            Serial.print(recordedData[i]);
-//            Serial.print(F("  New value: "));
-//            Serial.print(data[i]);
-            break;
-        }
-    }
-    
-    uint32_t diffTime = currentTime - logTime;
-    writeData = (writeData && (diffTime > MIN_LOG_INTERVAL_uS)) ||
-                    (diffTime >= MAX_LOG_INTERVAL_uS);
-    if (writeData) {
-        // update the recorded values
-        for (i = 0; i < ANALOG_COUNT; i++) {
-            recordedData[i] = data[i];
-        }
+    if (file.isOpen()) {
+        uint16_t data[ANALOG_COUNT];
         
-        // DEBUG output
-        Serial.print(F("  Logging: "));
+        // Current time in micros
+        uint32_t currentTime = micros();
         
-        // write the time derived from RTC
-        file.print(getTime());
-        
-        // DEBUG output
-        Serial.print(F(" "));
-        
-        // Write ADC data to CSV record.
-        for (uint8_t i = 0; i < ANALOG_COUNT; i++) {
-            file.write(',');
-            file.print(data[i]);
-            
-            // DEBUG output
-            if (i > 0) {
-                Serial.print(',');
+        // delta since last log record was written
+        uint32_t diffTime = currentTime - logTime;
+        if (diffTime > MIN_LOG_INTERVAL_uS) {
+            // OK, we *may* need to write a log record
+            // Read all channels in one go
+            uint8_t i;
+            for (i = 0; i < ANALOG_COUNT; i++) {
+                data[i] = analogRead(i);
             }
-            Serial.println(data[i]);
-        }
-        file.println();
-        
-        // Force data to SD and update the directory entry to avoid data loss.
-        if (!file.sync() || file.getWriteError()) {
-            error("write error");
-        } else {
-            // all OK: update last logged time
-            logTime = currentTime;
+            // compare with most recent recorded values - if the data has changed sufficiently
+            // in any channel we need to write a log record
+            uint16_t diff;
+            for (i = 0; i < ANALOG_COUNT; i++) {
+                diff = recordedData[i] > data[i] ? recordedData[i] - data[i] : data[i] - recordedData[i];
+                writeData = (diff > MIN_ANALOG_DELTA);
+                if (writeData) {
+                    // item at index i has changed enough
+                    // => entire record must be written
+                    
+                    // DEBUG output
+                    //            Serial.print(F("Old value: "));
+                    //            Serial.print(recordedData[i]);
+                    //            Serial.print(F("  New value: "));
+                    //            Serial.print(data[i]);
+                    break;
+                }
+            }
+            
+            writeData = (writeData || (diffTime >= MAX_LOG_INTERVAL_uS));
+            if (writeData) {
+                // update the recorded values
+                for (i = 0; i < ANALOG_COUNT; i++) {
+                    recordedData[i] = data[i];
+                }
+                
+                // DEBUG output
+                Serial.print(F("  Logging: "));
+                
+                // write the time derived from RTC
+                file.print(getTime());
+                
+                // DEBUG output
+                Serial.print(F(" "));
+                
+                // Write ADC data to CSV record.
+                for (uint8_t i = 0; i < ANALOG_COUNT; i++) {
+                    file.write(',');
+                    file.print(data[i]);
+                    
+                    // DEBUG output
+                    if (i > 0) {
+                        Serial.print(',');
+                    }
+                    Serial.println(data[i]);
+                }
+                file.println();
+                
+                // Force data to SD and update the directory entry to avoid data loss.
+                if (!file.sync() || file.getWriteError()) {
+                    error("write error");
+                } else {
+                    // all OK: update last logged time
+                    logTime = currentTime;
+                }
+            }
         }
     }
     return writeData;
