@@ -85,6 +85,8 @@ boolean fileOpen = false;
 
 // Log file base name.  Must be six characters or less.
 #define FILE_BASE_NAME "Data"
+
+#define FILE_CURRENT_NAME "current"
 //------------------------------------------------------------------------------
 // File system object.
 SdFat sd;
@@ -249,8 +251,7 @@ boolean handleBleCommands() {
 
 // Add setup code
 void setup() {
-    const uint8_t BASE_NAME_SIZE = sizeof(FILE_BASE_NAME) - 1;
-    char fileName[13] = FILE_BASE_NAME "00.csv";
+    char fileName[13] = FILE_CURRENT_NAME ".csv";
     
     Serial.begin(9600);
     while (!Serial) {} // wait for Leonardo
@@ -258,7 +259,7 @@ void setup() {
     
     Wire.begin();
     RTC.begin();
-    if (! RTC.isrunning()) {
+    if (!RTC.isrunning()) {
         Serial.println("RTC is NOT running!");
         // following line sets the RTC to the date & time this sketch was compiled
         // uncomment it & upload to set the time, date and start run the RTC!
@@ -271,21 +272,8 @@ void setup() {
         sd.initErrorHalt();
     }
     
-    // Find an unused file name.
-    if (BASE_NAME_SIZE > 6) {
-        error("FILE_BASE_NAME too long");
-    }
-    while (sd.exists(fileName)) {
-        if (fileName[BASE_NAME_SIZE + 1] != '9') {
-            fileName[BASE_NAME_SIZE + 1]++;
-        } else if (fileName[BASE_NAME_SIZE] != '9') {
-            fileName[BASE_NAME_SIZE + 1] = '0';
-            fileName[BASE_NAME_SIZE]++;
-        } else {
-            error("Can't create file name");
-        }
-    }
-    if (!file.open(fileName, O_CREAT | O_WRITE | O_EXCL)) {
+    // Always write to current.csv, but may need to roll
+    if (!file.open(fileName, O_CREAT | O_APPEND | O_WRITE)) {
         error("file.open");
     }
     do {
