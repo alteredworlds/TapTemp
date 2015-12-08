@@ -13,6 +13,10 @@
 
   References
   ----------------------------------
+  RTClib                https://github.com/adafruit/RTClib
+  RBL_nRF8001           https://github.com/RedBearLab/nRF8001
+  BLE_SDK_for_Arduino   https://github.com/cheong2k/ble-sdk-arduino
+  SdFat                 https://github.com/greiman/SdFat
 
 
 

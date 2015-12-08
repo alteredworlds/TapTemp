@@ -51,6 +51,9 @@
 #include <SdFat.h>
 #include <RBL_nRF8001.h>
 
+#include <Wire.h>
+#include <RTCLib.h>
+
 
 // Prototypes
 //==============================================================================
@@ -69,8 +72,8 @@ const uint8_t chipSelect = SS;
 // Run the bench example to check the quality of your SD card.
 const uint32_t SAMPLE_INTERVAL_MS = 200;
 
-// want at least 200ms between log entries
-const uint32_t MIN_LOG_INTERVAL_uS = 200 * 1000UL;
+// want at least 1s between log entries
+const uint32_t MIN_LOG_INTERVAL_uS = 1000 * 1000UL;
 
 // want at least 1 record per 60 mins to demonstrate 'alive'
 const uint32_t MAX_LOG_INTERVAL_uS = 3600 * 1000000UL;
@@ -92,6 +95,9 @@ SdFile file;
 // Time in micros for next data record.
 uint32_t logTime;
 
+// Real Time Clock
+RTC_DS1307 RTC;
+
 //==============================================================================
 // User functions.  Edit writeHeader() and logData() for your requirements.
 
@@ -101,12 +107,35 @@ uint16_t recordedData[ANALOG_COUNT];
 
 // Write data header.
 void writeHeader() {
-    file.print(F("micros"));
+    file.print(F("unixtime"));
     for (uint8_t i = 0; i < ANALOG_COUNT; i++) {
         file.print(F(",adc"));
         file.print(i, DEC);
     }
     file.println();
+}
+
+uint32_t getTime() {
+    DateTime now    = RTC.now();
+    uint32_t retVal = now.unixtime();
+    
+    // DEBUG output
+    Serial.print(now.year(), DEC);
+    Serial.print('/');
+    Serial.print(now.month(), DEC);
+    Serial.print('/');
+    Serial.print(now.day(), DEC);
+    Serial.print(' ');
+    Serial.print(now.hour(), DEC);
+    Serial.print(':');
+    Serial.print(now.minute(), DEC);
+    Serial.print(':');
+    Serial.print(now.second(), DEC);
+    Serial.print(" (");
+    Serial.print(retVal);
+    Serial.print(")");
+    
+    return retVal;
 }
 
 // Log a data record if we need to
@@ -154,11 +183,14 @@ boolean logIfAppropriate() {
             recordedData[i] = data[i];
         }
         
-        // write this time
-        file.print(currentTime);
+        // DEBUG output
+        Serial.print(F("  Logging: "));
+        
+        // write the time derived from RTC
+        file.print(getTime());
         
         // DEBUG output
-        Serial.print(F("  Logged: "));
+        Serial.print(F(" "));
         
         // Write ADC data to CSV record.
         for (uint8_t i = 0; i < ANALOG_COUNT; i++) {
@@ -214,15 +246,24 @@ boolean handleBleCommands() {
     return retVal;
 }
 
+
 // Add setup code
-void setup()
-{
+void setup() {
     const uint8_t BASE_NAME_SIZE = sizeof(FILE_BASE_NAME) - 1;
     char fileName[13] = FILE_BASE_NAME "00.csv";
     
     Serial.begin(9600);
     while (!Serial) {} // wait for Leonardo
     delay(1000);
+    
+    Wire.begin();
+    RTC.begin();
+    if (! RTC.isrunning()) {
+        Serial.println("RTC is NOT running!");
+        // following line sets the RTC to the date & time this sketch was compiled
+        // uncomment it & upload to set the time, date and start run the RTC!
+        RTC.adjust(DateTime(__DATE__, __TIME__));
+    }
 
     // Initialize the SD card at SPI_HALF_SPEED to avoid bus errors with
     // breadboards.  use SPI_FULL_SPEED for better performance.
@@ -274,7 +315,7 @@ void setup()
 
 void loop() {
     // we want to try handlingBleCommands if we didn't log in this loop
-    logIfAppropriate() || handleBleCommands();
+    handleBleCommands() || logIfAppropriate();
     
     // in any case, need to process outstanding BLE events (e.g.: send data)
     ble_do_events();
