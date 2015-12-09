@@ -58,7 +58,7 @@
 // Prototypes
 //==============================================================================
 // Error messages stored in flash.
-#define error(msg) sd.errorHalt(F(msg))
+#define error(msg) sd.errorHalt(msg)
 
 
 // Define variables and constants
@@ -72,21 +72,16 @@ const uint8_t chipSelect = SS;
 // Run the bench example to check the quality of your SD card.
 const uint32_t SAMPLE_INTERVAL_MS = 200;
 
-// want at least 1s between log entries
-const uint32_t MIN_LOG_INTERVAL_uS = 1000 * 1000UL;
+// want at least 1s between analog reads
+const uint32_t MIN_ANALOG_READ_INTERVAL_uS = 1000000;
 
 // want at least 1 record per 60 mins to demonstrate 'alive'
-const uint32_t MAX_LOG_INTERVAL_uS = 3600 * 1000000UL;
+const uint32_t MAX_LOG_INTERVAL_uS = 3600 * 1000000;
 
 // only want to record meaningful changes in analog reading
-const uint16_t MIN_ANALOG_DELTA = 3;
+const uint16_t MIN_ANALOG_DELTA = 1;
 
-boolean fileOpen = false;
-
-// Log file base name.  Must be six characters or less.
-#define FILE_BASE_NAME "Data"
-
-#define FILE_CURRENT_NAME "current"
+#define FILE_CURRENT_NAME "current.csv"
 //------------------------------------------------------------------------------
 // File system object.
 SdFat sd;
@@ -95,7 +90,10 @@ SdFat sd;
 SdFile file;
 
 // Time in micros for next data record.
-uint32_t logTime;
+uint32_t logTime = 0;
+
+// Time in micros when last sensor read occurred
+uint32_t sensorReadTime = 0;
 
 // Real Time Clock
 RTC_DS1307 RTC;
@@ -103,8 +101,10 @@ RTC_DS1307 RTC;
 //==============================================================================
 // User functions.  Edit writeHeader() and logData() for your requirements.
 
-// we have only a single termperature probe right now...
+// we have only a single temperature probe right now...
 const uint8_t ANALOG_COUNT = 1;
+
+// last measured analog data
 uint16_t recordedData[ANALOG_COUNT];
 
 // Write data header.
@@ -140,6 +140,7 @@ uint32_t getTime() {
     return retVal;
 }
 
+
 // Log a data record if we need to
 //    (big enough delta reading OR time interval)
 boolean logIfAppropriate() {
@@ -150,14 +151,20 @@ boolean logIfAppropriate() {
         // Current time in micros
         uint32_t currentTime = micros();
         
-        // delta since last log record was written
-        uint32_t diffTime = currentTime - logTime;
-        if (diffTime > MIN_LOG_INTERVAL_uS) {
-            // OK, we *may* need to write a log record
-            // Read all channels in one go
+        // delta since last sensor reading was taken big enough to measure again?
+        if ((currentTime - sensorReadTime) > MIN_ANALOG_READ_INTERVAL_uS) {
+            // OK, time to take a reading from the analog sensor(s)
+            sensorReadTime = currentTime;
+            
+            // DEBUG output
+            //Serial.println(F("Reading analog sensor(s)..."));
+            
             uint8_t i;
             for (i = 0; i < ANALOG_COUNT; i++) {
-                data[i] = analogRead(i);
+                // read twice see final comment by tuxdino: http://forum.arduino.cc/index.php?topic=6261.15
+                // Arduino analogRead() seems to combine channel selection & read, but 50us delay btwn required
+                analogRead(i);              // select correct channel
+                data[i] = analogRead(i);    // we should now get an accurate reading
             }
             // compare with most recent recorded values - if the data has changed sufficiently
             // in any channel we need to write a log record
@@ -169,22 +176,24 @@ boolean logIfAppropriate() {
                     // item at index i has changed enough
                     // => entire record must be written
                     
+                    // update the recorded values
+                    for (i = 0; i < ANALOG_COUNT; i++) {
+                        recordedData[i] = data[i];
+                    }
+                    
                     // DEBUG output
-                    //            Serial.print(F("Old value: "));
-                    //            Serial.print(recordedData[i]);
-                    //            Serial.print(F("  New value: "));
-                    //            Serial.print(data[i]);
+//                    Serial.print(F("Old value: "));
+//                    Serial.print(recordedData[i]);
+//                    Serial.print(F("  New value: "));
+//                    Serial.println(data[i]);
                     break;
                 }
             }
             
-            writeData = (writeData || (diffTime >= MAX_LOG_INTERVAL_uS));
+            // write to the log if either data changed on this read cycle
+            //  OR long time since last write & time to prove 'alive'
+            writeData = (writeData || ((currentTime - logTime) >= MAX_LOG_INTERVAL_uS));
             if (writeData) {
-                // update the recorded values
-                for (i = 0; i < ANALOG_COUNT; i++) {
-                    recordedData[i] = data[i];
-                }
-                
                 // DEBUG output
                 Serial.print(F("  Logging: "));
                 
@@ -209,7 +218,7 @@ boolean logIfAppropriate() {
                 
                 // Force data to SD and update the directory entry to avoid data loss.
                 if (!file.sync() || file.getWriteError()) {
-                    error("write error");
+                    error(F("write error"));
                 } else {
                     // all OK: update last logged time
                     logTime = currentTime;
@@ -253,8 +262,6 @@ boolean handleBleCommands() {
 
 // Add setup code
 void setup() {
-    char fileName[13] = FILE_CURRENT_NAME ".csv";
-    
     Serial.begin(9600);
     while (!Serial) {} // wait for Leonardo
     delay(1000);
@@ -262,7 +269,7 @@ void setup() {
     Wire.begin();
     RTC.begin();
     if (!RTC.isrunning()) {
-        Serial.println("RTC is NOT running!");
+        Serial.println(F("RTC is NOT running!"));
         // following line sets the RTC to the date & time this sketch was compiled
         // uncomment it & upload to set the time, date and start run the RTC!
         RTC.adjust(DateTime(__DATE__, __TIME__));
@@ -275,15 +282,15 @@ void setup() {
     }
     
     // Always write to current.csv, but may need to roll
-    if (!file.open(fileName, O_CREAT | O_APPEND | O_WRITE)) {
-        error("file.open");
+    if (!file.open(FILE_CURRENT_NAME, O_CREAT | O_APPEND | O_WRITE)) {
+        error(F("file.open"));
     }
     do {
         delay(10);
     } while (Serial.read() >= 0);
     
     Serial.print(F("Logging to: "));
-    Serial.println(fileName);
+    Serial.println(FILE_CURRENT_NAME);
     
     // Write data header.
     writeHeader();
@@ -306,6 +313,8 @@ void setup() {
 void loop() {
     // we want to try handlingBleCommands if we didn't log in this loop
     handleBleCommands() || logIfAppropriate();
+    
+    //handleBleCommands();
     
     // in any case, need to process outstanding BLE events (e.g.: send data)
     ble_do_events();
