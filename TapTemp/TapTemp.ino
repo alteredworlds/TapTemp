@@ -164,6 +164,7 @@ boolean logIfAppropriate() {
                 // read twice see final comment by tuxdino: http://forum.arduino.cc/index.php?topic=6261.15
                 // Arduino analogRead() seems to combine channel selection & read, but 50us delay btwn required
                 analogRead(i);              // select correct channel
+                delay(5);
                 data[i] = analogRead(i);    // we should now get an accurate reading
             }
             // compare with most recent recorded values - if the data has changed sufficiently
