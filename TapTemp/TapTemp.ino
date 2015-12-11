@@ -98,8 +98,6 @@ uint32_t sensorReadTime = 0;
 // Real Time Clock
 RTC_DS1307 RTC;
 
-//==============================================================================
-// User functions.  Edit writeHeader() and logData() for your requirements.
 
 // we have only a single temperature probe right now...
 const uint8_t ANALOG_COUNT = 1;
@@ -108,14 +106,14 @@ const uint8_t ANALOG_COUNT = 1;
 uint16_t recordedData[ANALOG_COUNT];
 
 // Write data header.
-void writeHeader() {
-    file.print(F("unixtime"));
-    for (uint8_t i = 0; i < ANALOG_COUNT; i++) {
-        file.print(F(",adc"));
-        file.print(i, DEC);
-    }
-    file.println();
-}
+//void writeHeader() {
+//    file.print(F("unixtime"));
+//    for (uint8_t i = 0; i < ANALOG_COUNT; i++) {
+//        file.print(F(",adc"));
+//        file.print(i, DEC);
+//    }
+//    file.println();
+//}
 
 uint32_t getTime() {
     DateTime now    = RTC.now();
@@ -135,7 +133,7 @@ uint32_t getTime() {
     Serial.print(now.second(), DEC);
     Serial.print(" (");
     Serial.print(retVal);
-    Serial.print(")");
+    Serial.print(") ");
     
     return retVal;
 }
@@ -243,6 +241,15 @@ void openFile() {
     Serial.println(FILE_CURRENT_NAME);
 }
 
+void logToFile(const __FlashStringHelper *ifsh) {
+    file.print(getTime());
+    file.print(" ");
+    file.println(ifsh);
+    if (!file.sync() || file.getWriteError()) {
+        error(F("write error"));
+    }
+}
+
 boolean handleBleCommands() {
     boolean retVal = false;
     while (ble_available()) {
@@ -261,6 +268,9 @@ boolean handleBleCommands() {
                 if (!file.isOpen()) {
                     openFile();
                     
+                    // write when we opened file
+                    logToFile(F("Opened file"));
+                    
                     // DEBUG output
                     Serial.println(F("Opened file"));
                 } else {
@@ -271,7 +281,10 @@ boolean handleBleCommands() {
             
             case 'C': {
                 if (file.isOpen()) {
-                    // should log close request (reason?) in file before closing
+                    // record this close file command
+                    logToFile(F("Closed file"));
+                    
+                    // we can now close the file
                     file.close();
                     
                     // DEBUG output
@@ -312,7 +325,7 @@ void setup() {
     openFile();
     
     // Write data header.
-    writeHeader();
+    //writeHeader();
     
     // Set BLE Shield name here, max. length 10
     ble_set_name("AW_TAP_01");
