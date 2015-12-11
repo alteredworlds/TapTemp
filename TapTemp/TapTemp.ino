@@ -230,6 +230,19 @@ boolean logIfAppropriate() {
     return writeData;
 }
 
+void openFile() {
+    // Always write to current.csv, but may need to roll
+    if (!file.open(FILE_CURRENT_NAME, O_CREAT | O_APPEND | O_WRITE)) {
+        error(F("file.open"));
+    }
+    do {
+        delay(10);
+    } while (Serial.read() >= 0);
+    
+    Serial.print(F("Logging to: "));
+    Serial.println(FILE_CURRENT_NAME);
+}
+
 boolean handleBleCommands() {
     boolean retVal = false;
     while (ble_available()) {
@@ -244,14 +257,27 @@ boolean handleBleCommands() {
         
         // Parse data here
         switch (cmd) {
-            case 'V': // should be query protocol version
-            // but falling through to close the file
+            case 'O': {
+                if (!file.isOpen()) {
+                    openFile();
+                    
+                    // DEBUG output
+                    Serial.println(F("Opened file"));
+                } else {
+                    Serial.println(F("File already open"));
+                }
+                break;
+            }
+            
             case 'C': {
                 if (file.isOpen()) {
+                    // should log close request (reason?) in file before closing
                     file.close();
                     
                     // DEBUG output
                     Serial.println(F("Closed file"));
+                } else {
+                    Serial.println(F("File already closed"));
                 }
             }
             break;
@@ -282,16 +308,8 @@ void setup() {
         sd.initErrorHalt();
     }
     
-    // Always write to current.csv, but may need to roll
-    if (!file.open(FILE_CURRENT_NAME, O_CREAT | O_APPEND | O_WRITE)) {
-        error(F("file.open"));
-    }
-    do {
-        delay(10);
-    } while (Serial.read() >= 0);
-    
-    Serial.print(F("Logging to: "));
-    Serial.println(FILE_CURRENT_NAME);
+    // most recent file open, please...
+    openFile();
     
     // Write data header.
     writeHeader();
