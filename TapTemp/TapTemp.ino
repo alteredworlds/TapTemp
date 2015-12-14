@@ -197,13 +197,14 @@ boolean logIfAppropriate() {
                 Serial.print(F("  Logging: "));
                 
                 // write the time derived from RTC
-                file.print(getTime());
+                uint32_t rtcTime = getTime();
+                file.print(rtcTime);
                 
                 // DEBUG output
                 Serial.print(F(" "));
                 
                 // Write ADC data to CSV record.
-                for (uint8_t i = 0; i < ANALOG_COUNT; i++) {
+                for (i = 0; i < ANALOG_COUNT; i++) {
                     file.write(',');
                     file.print(data[i]);
                     
@@ -221,6 +222,14 @@ boolean logIfAppropriate() {
                 } else {
                     // all OK: update last logged time
                     logTime = currentTime;
+                }
+                if (ble_connected()) {
+                    Serial.println(F("Writing data to active BLE connection..."));
+                    ble_write_bytes((byte *)&rtcTime, 4);
+                    for (i = 0; i < ANALOG_COUNT; i++) {
+                        ble_write_bytes((byte *)&recordedData[i], 2);
+                    }
+                    
                 }
             }
         }
@@ -343,10 +352,8 @@ void setup() {
 }
 
 void loop() {
-    // we want to try handlingBleCommands if we didn't log in this loop
+    // only perform one of handleBleCommands, logIfAppropriate on a given loop
     handleBleCommands() || logIfAppropriate();
-    
-    //handleBleCommands();
     
     // in any case, need to process outstanding BLE events (e.g.: send data)
     ble_do_events();
