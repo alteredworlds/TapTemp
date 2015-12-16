@@ -114,80 +114,6 @@ const uint8_t ANALOG_COUNT = 1;
 // last measured analog data
 uint16_t recordedData[ANALOG_COUNT];
 
-// modified version of http://stackoverflow.com/questions/7910339/how-to-convert-int-to-string-on-arduino
-void int16_2str( register uint16_t i, char* buf ) {
-    register unsigned char L = 0;
-    register char c;
-    register boolean m = false;
-    register char b;  // lower-byte of i
-
-    // ten-thousands
-    if( i > 9999 ) {
-        c = i < 20000 ? 1
-        : i < 30000 ? 2
-        : 3;
-        buf[ L++ ] = c + 48;
-        i -= c * 10000;
-        m = true;
-    }
-    // thousands
-    if( i > 999 ) {
-        c = i < 5000
-        ? ( i < 3000
-           ? ( i < 2000 ? 1 : 2 )
-           :   i < 4000 ? 3 : 4
-           )
-        : i < 8000
-        ? ( i < 6000
-           ? 5
-           : i < 7000 ? 6 : 7
-           )
-        : i < 9000 ? 8 : 9;
-        buf[ L++ ] = c + 48;
-        i -= c * 1000;
-        m = true;
-    }
-    else if( m ) buf[ L++ ] = '0';
-    // hundreds
-    if( i > 99 ) {
-        c = i < 500
-        ? ( i < 300
-           ? ( i < 200 ? 1 : 2 )
-           :   i < 400 ? 3 : 4
-           )
-        : i < 800
-        ? ( i < 600
-           ? 5
-           : i < 700 ? 6 : 7
-           )
-        : i < 900 ? 8 : 9;
-        buf[ L++ ] = c + 48;
-        i -= c * 100;
-        m = true;
-    }
-    else if( m ) buf[ L++ ] = '0';
-    // decades (check on lower byte to optimize code)
-    b = char( i );
-    if( b > 9 ) {
-        c = b < 50
-        ? ( b < 30
-           ? ( b < 20 ? 1 : 2 )
-           :   b < 40 ? 3 : 4
-           )
-        : b < 80
-        ? ( i < 60
-           ? 5
-           : i < 70 ? 6 : 7
-           )
-        : i < 90 ? 8 : 9;
-        buf[ L++ ] = c + 48;
-        b -= c * 10;
-        m = true;
-    }
-    else if( m ) buf[ L++ ] = '0';
-    // last digit
-    buf[ L++ ] = b + 48;
-}
 
 void serialPrintTime(DateTime now) {
     // DEBUG output
@@ -226,33 +152,30 @@ void openFile() {
     do {
         delay(10);
     } while (Serial.read() >= 0);
-    
-    file.dateTimeCallback(dateTimeFn);
-    
-    Serial.print(F("Logging to: "));
-    Serial.println(FILE_CURRENT_NAME);
 }
 
 void rollLog() {
     // rename(current.csv, YYYYMMDD.csv);
-    char fileName[] = "00000000.csv";
-    // we expect value in lastWriteYear to be in 1000..9999
-    int16_2str(lastWriteYear, fileName);
-    // we expect value in lastWriteMonth to be in 0..12
-    int16_2str(lastWriteMonth, fileName + ((lastWriteMonth < 10) ? 5 : 4));
-    // we expect value in lastWriteDay to be in 0..31
-    int16_2str(lastWriteDay, fileName + ((lastWriteDay < 10) ? 7 : 6));
-
-    // close current file
-    file.close();
-    if (!sd.rename(FILE_CURRENT_NAME, fileName)) {
-        error(fileName);
-    } else {
-        Serial.print(F("Rolled current.csv to "));
-        Serial.println(fileName);
-        
-        // open current.csv
-        openFile();
+    if (sd.exists(FILE_CURRENT_NAME)) {
+        char fileName[13];
+        snprintf(fileName, sizeof(fileName), "%4d%02d%02d.csv", lastWriteYear, lastWriteMonth, lastWriteDay);
+        if (sd.exists(fileName)) {
+            do {
+                fileName[11]--;
+            } while (sd.exists(fileName) && (fileName[11] > 97));
+            if (sd.exists(fileName)) {
+                error(F("Failed to rollover: multiple file versions already exist."));
+            }
+        }
+        // OK, now we have a filename, go for it...
+        if (!sd.rename(FILE_CURRENT_NAME, fileName)) {
+            Serial.print(F("File rename error"));
+            sd.errorPrint();
+            error(fileName);
+        } else {
+            Serial.print(F("Rolled current.csv to "));
+            Serial.println(fileName);
+        }
     }
 }
 
@@ -261,101 +184,102 @@ void rollLog() {
 //    (big enough delta reading OR time interval)
 boolean logIfAppropriate() {
     boolean writeData = false;
-    if (file.isOpen()) {
-        uint16_t data[ANALOG_COUNT];
+    uint16_t data[ANALOG_COUNT];
+    
+    // Current time in micros
+    uint32_t currentTime = micros();
+    
+    // delta since last sensor reading was taken big enough to measure again?
+    if ((currentTime - sensorReadTime) > MIN_ANALOG_READ_INTERVAL_uS) {
+        // OK, time to take a reading from the analog sensor(s)
+        sensorReadTime = currentTime;
         
-        // Current time in micros
-        uint32_t currentTime = micros();
+        // DEBUG output
+        //Serial.println(F("Reading analog sensor(s)..."));
         
-        // delta since last sensor reading was taken big enough to measure again?
-        if ((currentTime - sensorReadTime) > MIN_ANALOG_READ_INTERVAL_uS) {
-            // OK, time to take a reading from the analog sensor(s)
-            sensorReadTime = currentTime;
-            
-            // DEBUG output
-            //Serial.println(F("Reading analog sensor(s)..."));
-            
-            uint8_t i;
-            for (i = 0; i < ANALOG_COUNT; i++) {
-                // read twice see final comment by tuxdino: http://forum.arduino.cc/index.php?topic=6261.15
-                // Arduino analogRead() seems to combine channel selection & read, but 50us delay btwn required
-                analogRead(i);              // select correct channel
-                delay(5);
-                data[i] = analogRead(i);    // we should now get an accurate reading
-            }
-            // compare with most recent recorded values - if the data has changed sufficiently
-            // in any channel we need to write a log record
-            uint16_t diff;
-            for (i = 0; i < ANALOG_COUNT; i++) {
-                diff = recordedData[i] > data[i] ? recordedData[i] - data[i] : data[i] - recordedData[i];
-                writeData = (diff > MIN_ANALOG_DELTA);
-                if (writeData) {
-                    // item at index i has changed enough
-                    // => entire record must be written
-                    
-                    // update the recorded values for the entire record
-                    for (i = 0; i < ANALOG_COUNT; i++) {
-                        recordedData[i] = data[i];
-                    }
-                    
-                    // DEBUG output
-//                    Serial.print(F("Old value: "));
-//                    Serial.print(recordedData[i]);
-//                    Serial.print(F("  New value: "));
-//                    Serial.println(data[i]);
-                    break;
-                }
-            }
-            
-            // write to the log if either data changed on this read cycle
-            //  OR long time since last write & time to prove 'alive'
-            writeData = (writeData || ((currentTime - logTime) >= MAX_LOG_INTERVAL_uS));
+        uint8_t i;
+        for (i = 0; i < ANALOG_COUNT; i++) {
+            // read twice see final comment by tuxdino: http://forum.arduino.cc/index.php?topic=6261.15
+            // Arduino analogRead() seems to combine channel selection & read, but 50us delay btwn required
+            analogRead(i);              // select correct channel
+            delay(5);
+            data[i] = analogRead(i);    // we should now get an accurate reading
+        }
+        // compare with most recent recorded values - if the data has changed sufficiently
+        // in any channel we need to write a log record
+        uint16_t diff;
+        for (i = 0; i < ANALOG_COUNT; i++) {
+            diff = recordedData[i] > data[i] ? recordedData[i] - data[i] : data[i] - recordedData[i];
+            writeData = (diff > MIN_ANALOG_DELTA);
             if (writeData) {
-                // write the time derived from RTC
-                DateTime now = RTC.now();
-                if (lastWriteDay && (now.day() != lastWriteDay)) {
-                    rollLog();
-                }
+                // item at index i has changed enough
+                // => entire record must be written
                 
-                uint32_t rtcTime = now.unixtime();
-                file.print(rtcTime);
+                // update the recorded values for the entire record
+                for (i = 0; i < ANALOG_COUNT; i++) {
+                    recordedData[i] = data[i];
+                }
                 
                 // DEBUG output
-                Serial.print(F("  Logging: "));
-                serialPrintTime(now);
+                //                    Serial.print(F("Old value: "));
+                //                    Serial.print(recordedData[i]);
+                //                    Serial.print(F("  New value: "));
+                //                    Serial.println(data[i]);
+                break;
+            }
+        }
+        
+        // write to the log if either data changed on this read cycle
+        //  OR long time since last write & time to prove 'alive'
+        writeData = (writeData || ((currentTime - logTime) >= MAX_LOG_INTERVAL_uS));
+        if (writeData) {
+            // write the time derived from RTC
+            DateTime now = RTC.now();
+            if (lastWriteDay && (now.day() != lastWriteDay)) {
+                rollLog();
+            }
+            
+            // open file for each log write
+            openFile();
+            
+            uint32_t rtcTime = now.unixtime();
+            file.print(rtcTime);
+            
+            // DEBUG output
+            Serial.print(F("  Logging: "));
+            serialPrintTime(now);
+            
+            // Write ADC data to CSV record.
+            for (i = 0; i < ANALOG_COUNT; i++) {
+                file.write(',');
+                file.print(data[i]);
                 
-                // Write ADC data to CSV record.
+                // DEBUG output
+                if (i > 0) {
+                    Serial.print(',');
+                }
+                Serial.println(data[i]);
+            }
+            file.println();
+            
+            // Force data to SD and update the directory entry to avoid data loss.
+            if (!file.close()) {
+                error(F("write error"));
+            } else {
+                // all OK: update last logged time
+                logTime = currentTime;
+                // also update last RTC write date
+                lastWriteDay = now.day();
+                lastWriteMonth = now.month();
+                lastWriteYear = now.year();
+            }
+            if (false) { //ble_connected()) {
+                Serial.println(F("Writing data to active BLE connection..."));
+                ble_write_bytes((byte *)&rtcTime, 4);
                 for (i = 0; i < ANALOG_COUNT; i++) {
-                    file.write(',');
-                    file.print(data[i]);
-                    
-                    // DEBUG output
-                    if (i > 0) {
-                        Serial.print(',');
-                    }
-                    Serial.println(data[i]);
+                    ble_write_bytes((byte *)&recordedData[i], 2);
                 }
-                file.println();
                 
-                // Force data to SD and update the directory entry to avoid data loss.
-                if (!file.sync() || file.getWriteError()) {
-                    error(F("write error"));
-                } else {
-                    // all OK: update last logged time
-                    logTime = currentTime;
-                    // also update last RTC write date
-                    lastWriteDay = now.day();
-                    lastWriteMonth = now.month();
-                    lastWriteYear = now.year();
-                }
-                if (ble_connected()) {
-                    Serial.println(F("Writing data to active BLE connection..."));
-                    ble_write_bytes((byte *)&rtcTime, 4);
-                    for (i = 0; i < ANALOG_COUNT; i++) {
-                        ble_write_bytes((byte *)&recordedData[i], 2);
-                    }
-                    
-                }
             }
         }
     }
@@ -429,11 +353,8 @@ void setup() {
         sd.initErrorHalt();
     }
     
-    // most recent file open, please...
-    openFile();
-    
-    // Write data header.
-    //writeHeader();
+    // set the datetime callback for the file
+    file.dateTimeCallback(dateTimeFn);
     
     // Set BLE Shield name here, max. length 10
     ble_set_name("AW_TAP_01");
@@ -448,6 +369,8 @@ void setup() {
     
     // last logged time set 0 => initial time based write
     logTime = 0;
+    
+    delay(1000);
 }
 
 void loop() {
