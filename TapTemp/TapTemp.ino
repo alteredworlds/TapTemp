@@ -89,11 +89,20 @@ SdFat sd;
 // Log file.
 SdFile file;
 
-// Time in micros for next data record.
+// Time in micros when data last logged
 uint32_t logTime = 0;
 
 // Time in micros when last sensor read occurred
 uint32_t sensorReadTime = 0;
+
+// RTC time when data last logged
+//uint16_t lastWriteYear = 2015;
+//uint8_t lastWriteMonth = 9;
+//uint8_t lastWriteDay = 5;
+
+uint16_t lastWriteYear = 0;
+uint8_t lastWriteMonth = 0;
+uint8_t lastWriteDay = 0;
 
 // Real Time Clock
 RTC_DS1307 RTC;
@@ -105,20 +114,82 @@ const uint8_t ANALOG_COUNT = 1;
 // last measured analog data
 uint16_t recordedData[ANALOG_COUNT];
 
-// Write data header.
-//void writeHeader() {
-//    file.print(F("unixtime"));
-//    for (uint8_t i = 0; i < ANALOG_COUNT; i++) {
-//        file.print(F(",adc"));
-//        file.print(i, DEC);
-//    }
-//    file.println();
-//}
+// modified version of http://stackoverflow.com/questions/7910339/how-to-convert-int-to-string-on-arduino
+void int16_2str( register uint16_t i, char* buf ) {
+    register unsigned char L = 0;
+    register char c;
+    register boolean m = false;
+    register char b;  // lower-byte of i
 
-uint32_t getTime() {
-    DateTime now    = RTC.now();
-    uint32_t retVal = now.unixtime();
-    
+    // ten-thousands
+    if( i > 9999 ) {
+        c = i < 20000 ? 1
+        : i < 30000 ? 2
+        : 3;
+        buf[ L++ ] = c + 48;
+        i -= c * 10000;
+        m = true;
+    }
+    // thousands
+    if( i > 999 ) {
+        c = i < 5000
+        ? ( i < 3000
+           ? ( i < 2000 ? 1 : 2 )
+           :   i < 4000 ? 3 : 4
+           )
+        : i < 8000
+        ? ( i < 6000
+           ? 5
+           : i < 7000 ? 6 : 7
+           )
+        : i < 9000 ? 8 : 9;
+        buf[ L++ ] = c + 48;
+        i -= c * 1000;
+        m = true;
+    }
+    else if( m ) buf[ L++ ] = '0';
+    // hundreds
+    if( i > 99 ) {
+        c = i < 500
+        ? ( i < 300
+           ? ( i < 200 ? 1 : 2 )
+           :   i < 400 ? 3 : 4
+           )
+        : i < 800
+        ? ( i < 600
+           ? 5
+           : i < 700 ? 6 : 7
+           )
+        : i < 900 ? 8 : 9;
+        buf[ L++ ] = c + 48;
+        i -= c * 100;
+        m = true;
+    }
+    else if( m ) buf[ L++ ] = '0';
+    // decades (check on lower byte to optimize code)
+    b = char( i );
+    if( b > 9 ) {
+        c = b < 50
+        ? ( b < 30
+           ? ( b < 20 ? 1 : 2 )
+           :   b < 40 ? 3 : 4
+           )
+        : b < 80
+        ? ( i < 60
+           ? 5
+           : i < 70 ? 6 : 7
+           )
+        : i < 90 ? 8 : 9;
+        buf[ L++ ] = c + 48;
+        b -= c * 10;
+        m = true;
+    }
+    else if( m ) buf[ L++ ] = '0';
+    // last digit
+    buf[ L++ ] = b + 48;
+}
+
+void serialPrintTime(DateTime now) {
     // DEBUG output
     Serial.print(now.year(), DEC);
     Serial.print('/');
@@ -132,10 +203,57 @@ uint32_t getTime() {
     Serial.print(':');
     Serial.print(now.second(), DEC);
     Serial.print(" (");
-    Serial.print(retVal);
+    Serial.print(now.unixtime());
     Serial.print(") ");
+}
+
+void dateTimeFn(uint16_t* date, uint16_t* time) {
+    // Get date and time from real-time clock
+    DateTime now = RTC.now();
+
+    // return date using FAT_DATE macro to format fields
+    *date = FAT_DATE(now.year(), now.month(), now.day());
     
-    return retVal;
+    // return time using FAT_TIME macro to format fields
+    *time = FAT_TIME(now.hour(), now.minute(), now.second());
+}
+
+void openFile() {
+    // Always write to current.csv, but may need to roll
+    if (!file.open(FILE_CURRENT_NAME, O_CREAT | O_APPEND | O_WRITE)) {
+        error(F("file.open"));
+    }
+    do {
+        delay(10);
+    } while (Serial.read() >= 0);
+    
+    file.dateTimeCallback(dateTimeFn);
+    
+    Serial.print(F("Logging to: "));
+    Serial.println(FILE_CURRENT_NAME);
+}
+
+void rollLog() {
+    // rename(current.csv, YYYYMMDD.csv);
+    char fileName[] = "00000000.csv";
+    // we expect value in lastWriteYear to be in 1000..9999
+    int16_2str(lastWriteYear, fileName);
+    // we expect value in lastWriteMonth to be in 0..12
+    int16_2str(lastWriteMonth, fileName + ((lastWriteMonth < 10) ? 5 : 4));
+    // we expect value in lastWriteDay to be in 0..31
+    int16_2str(lastWriteDay, fileName + ((lastWriteDay < 10) ? 7 : 6));
+
+    // close current file
+    file.close();
+    if (!sd.rename(FILE_CURRENT_NAME, fileName)) {
+        error(fileName);
+    } else {
+        Serial.print(F("Rolled current.csv to "));
+        Serial.println(fileName);
+        
+        // open current.csv
+        openFile();
+    }
 }
 
 
@@ -175,7 +293,7 @@ boolean logIfAppropriate() {
                     // item at index i has changed enough
                     // => entire record must be written
                     
-                    // update the recorded values
+                    // update the recorded values for the entire record
                     for (i = 0; i < ANALOG_COUNT; i++) {
                         recordedData[i] = data[i];
                     }
@@ -193,15 +311,18 @@ boolean logIfAppropriate() {
             //  OR long time since last write & time to prove 'alive'
             writeData = (writeData || ((currentTime - logTime) >= MAX_LOG_INTERVAL_uS));
             if (writeData) {
-                // DEBUG output
-                Serial.print(F("  Logging: "));
-                
                 // write the time derived from RTC
-                uint32_t rtcTime = getTime();
+                DateTime now = RTC.now();
+                if (lastWriteDay && (now.day() != lastWriteDay)) {
+                    rollLog();
+                }
+                
+                uint32_t rtcTime = now.unixtime();
                 file.print(rtcTime);
                 
                 // DEBUG output
-                Serial.print(F(" "));
+                Serial.print(F("  Logging: "));
+                serialPrintTime(now);
                 
                 // Write ADC data to CSV record.
                 for (i = 0; i < ANALOG_COUNT; i++) {
@@ -222,6 +343,10 @@ boolean logIfAppropriate() {
                 } else {
                     // all OK: update last logged time
                     logTime = currentTime;
+                    // also update last RTC write date
+                    lastWriteDay = now.day();
+                    lastWriteMonth = now.month();
+                    lastWriteYear = now.year();
                 }
                 if (ble_connected()) {
                     Serial.println(F("Writing data to active BLE connection..."));
@@ -235,28 +360,6 @@ boolean logIfAppropriate() {
         }
     }
     return writeData;
-}
-
-void openFile() {
-    // Always write to current.csv, but may need to roll
-    if (!file.open(FILE_CURRENT_NAME, O_CREAT | O_APPEND | O_WRITE)) {
-        error(F("file.open"));
-    }
-    do {
-        delay(10);
-    } while (Serial.read() >= 0);
-    
-    Serial.print(F("Logging to: "));
-    Serial.println(FILE_CURRENT_NAME);
-}
-
-void logToFile(const __FlashStringHelper *ifsh) {
-    file.print(getTime());
-    file.print(" ");
-    file.println(ifsh);
-    if (!file.sync() || file.getWriteError()) {
-        error(F("write error"));
-    }
 }
 
 boolean handleBleCommands() {
@@ -277,12 +380,10 @@ boolean handleBleCommands() {
                 if (!file.isOpen()) {
                     openFile();
                     
-                    // write when we opened file
-                    logToFile(F("Opened file"));
-                    
                     // DEBUG output
                     Serial.println(F("Opened file"));
                 } else {
+                    // DEBUG output
                     Serial.println(F("File already open"));
                 }
                 break;
@@ -290,15 +391,13 @@ boolean handleBleCommands() {
             
             case 'C': {
                 if (file.isOpen()) {
-                    // record this close file command
-                    logToFile(F("Closed file"));
-                    
                     // we can now close the file
                     file.close();
                     
                     // DEBUG output
                     Serial.println(F("Closed file"));
                 } else {
+                    // DEBUG output
                     Serial.println(F("File already closed"));
                 }
             }
@@ -343,7 +442,7 @@ void setup() {
     ble_begin();
     
     // set data to zero (necessary?)
-    for (uint16_t i = 0; i < ANALOG_COUNT; i++) {
+    for (uint8_t i = 0; i < ANALOG_COUNT; i++) {
         recordedData[i] = 0;
     }
     
