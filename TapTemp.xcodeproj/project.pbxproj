@@ -242,19 +242,6 @@
 		AA2A151207110813AA000119 /* IRremoteInt.h in Sources */ = {isa = PBXBuildFile; fileRef = AAAA151207110813AA000119 /* IRremoteInt.h */; };
 		AA2A151207110813AA00011A /* IRremoteTools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAAA151207110813AA00011A /* IRremoteTools.cpp */; };
 		AA2A151207110813AA00011B /* IRremoteTools.h in Sources */ = {isa = PBXBuildFile; fileRef = AAAA151207110813AA00011B /* IRremoteTools.h */; };
-		AA2A151207110813AA00011E /* File.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAAA151207110813AA00011E /* File.cpp */; };
-		AA2A151207110813AA00011F /* SD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAAA151207110813AA00011F /* SD.cpp */; };
-		AA2A151207110813AA000120 /* SD.h in Sources */ = {isa = PBXBuildFile; fileRef = AAAA151207110813AA000120 /* SD.h */; };
-		AA2A151207110813AA000122 /* FatStructs.h in Sources */ = {isa = PBXBuildFile; fileRef = AAAA151207110813AA000122 /* FatStructs.h */; };
-		AA2A151207110813AA000123 /* Sd2Card.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAAA151207110813AA000123 /* Sd2Card.cpp */; };
-		AA2A151207110813AA000124 /* Sd2Card.h in Sources */ = {isa = PBXBuildFile; fileRef = AAAA151207110813AA000124 /* Sd2Card.h */; };
-		AA2A151207110813AA000125 /* Sd2PinMap.h in Sources */ = {isa = PBXBuildFile; fileRef = AAAA151207110813AA000125 /* Sd2PinMap.h */; };
-		AA2A151207110813AA000126 /* SdFat.h in Sources */ = {isa = PBXBuildFile; fileRef = AAAA151207110813AA000126 /* SdFat.h */; };
-		AA2A151207110813AA000127 /* SdFatmainpage.h in Sources */ = {isa = PBXBuildFile; fileRef = AAAA151207110813AA000127 /* SdFatmainpage.h */; };
-		AA2A151207110813AA000128 /* SdFatUtil.h in Sources */ = {isa = PBXBuildFile; fileRef = AAAA151207110813AA000128 /* SdFatUtil.h */; };
-		AA2A151207110813AA000129 /* SdFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAAA151207110813AA000129 /* SdFile.cpp */; };
-		AA2A151207110813AA00012A /* SdInfo.h in Sources */ = {isa = PBXBuildFile; fileRef = AAAA151207110813AA00012A /* SdInfo.h */; };
-		AA2A151207110813AA00012B /* SdVolume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAAA151207110813AA00012B /* SdVolume.cpp */; };
 		AA2A151207110813AA00012F /* Servo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAAA151207110813AA00012F /* Servo.cpp */; };
 		AA2A151207110813AA000130 /* ServoTimers.h in Sources */ = {isa = PBXBuildFile; fileRef = AAAA151207110813AA000130 /* ServoTimers.h */; };
 		AA2A151207110813AA000132 /* Servo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAAA151207110813AA000132 /* Servo.cpp */; };
@@ -409,6 +396,19 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5F5A94821C25E4AC00659724 /* File.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = File.cpp; path = SD/src/File.cpp; sourceTree = "<group>"; };
+		5F5A94831C25E4AC00659724 /* SD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SD.cpp; path = SD/src/SD.cpp; sourceTree = "<group>"; };
+		5F5A94841C25E4AC00659724 /* SD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SD.h; path = SD/src/SD.h; sourceTree = "<group>"; };
+		5F5A94861C25E4D000659724 /* FatStructs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FatStructs.h; path = SD/src/utility/FatStructs.h; sourceTree = "<group>"; };
+		5F5A94871C25E4D000659724 /* Sd2Card.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Sd2Card.cpp; path = SD/src/utility/Sd2Card.cpp; sourceTree = "<group>"; };
+		5F5A94881C25E4D000659724 /* Sd2Card.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Sd2Card.h; path = SD/src/utility/Sd2Card.h; sourceTree = "<group>"; };
+		5F5A94891C25E4D000659724 /* Sd2PinMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Sd2PinMap.h; path = SD/src/utility/Sd2PinMap.h; sourceTree = "<group>"; };
+		5F5A948A1C25E4D000659724 /* SdFat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SdFat.h; path = SD/src/utility/SdFat.h; sourceTree = "<group>"; };
+		5F5A948B1C25E4D000659724 /* SdFatmainpage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SdFatmainpage.h; path = SD/src/utility/SdFatmainpage.h; sourceTree = "<group>"; };
+		5F5A948C1C25E4D000659724 /* SdFatUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SdFatUtil.h; path = SD/src/utility/SdFatUtil.h; sourceTree = "<group>"; };
+		5F5A948D1C25E4D000659724 /* SdFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SdFile.cpp; path = SD/src/utility/SdFile.cpp; sourceTree = "<group>"; };
+		5F5A948E1C25E4D000659724 /* SdInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SdInfo.h; path = SD/src/utility/SdInfo.h; sourceTree = "<group>"; };
+		5F5A948F1C25E4D000659724 /* SdVolume.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SdVolume.cpp; path = SD/src/utility/SdVolume.cpp; sourceTree = "<group>"; };
 		5FD53CED1C159C1000256CC6 /* Index */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Index; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FD53CF01C159C1000256CC6 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		5FD53CF21C159C1000256CC6 /* Makefile */ = {isa = PBXFileReference; explicitFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
@@ -768,19 +768,6 @@
 		AAAA151207110813AA000119 /* IRremoteInt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRremoteInt.h; sourceTree = "<group>"; };
 		AAAA151207110813AA00011A /* IRremoteTools.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IRremoteTools.cpp; sourceTree = "<group>"; };
 		AAAA151207110813AA00011B /* IRremoteTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRremoteTools.h; sourceTree = "<group>"; };
-		AAAA151207110813AA00011E /* File.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = File.cpp; sourceTree = "<group>"; };
-		AAAA151207110813AA00011F /* SD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SD.cpp; sourceTree = "<group>"; };
-		AAAA151207110813AA000120 /* SD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SD.h; sourceTree = "<group>"; };
-		AAAA151207110813AA000122 /* FatStructs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FatStructs.h; sourceTree = "<group>"; };
-		AAAA151207110813AA000123 /* Sd2Card.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Sd2Card.cpp; sourceTree = "<group>"; };
-		AAAA151207110813AA000124 /* Sd2Card.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sd2Card.h; sourceTree = "<group>"; };
-		AAAA151207110813AA000125 /* Sd2PinMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sd2PinMap.h; sourceTree = "<group>"; };
-		AAAA151207110813AA000126 /* SdFat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SdFat.h; sourceTree = "<group>"; };
-		AAAA151207110813AA000127 /* SdFatmainpage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SdFatmainpage.h; sourceTree = "<group>"; };
-		AAAA151207110813AA000128 /* SdFatUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SdFatUtil.h; sourceTree = "<group>"; };
-		AAAA151207110813AA000129 /* SdFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SdFile.cpp; sourceTree = "<group>"; };
-		AAAA151207110813AA00012A /* SdInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SdInfo.h; sourceTree = "<group>"; };
-		AAAA151207110813AA00012B /* SdVolume.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SdVolume.cpp; sourceTree = "<group>"; };
 		AAAA151207110813AA00012F /* Servo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Servo.cpp; sourceTree = "<group>"; };
 		AAAA151207110813AA000130 /* ServoTimers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServoTimers.h; sourceTree = "<group>"; };
 		AAAA151207110813AA000132 /* Servo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Servo.cpp; sourceTree = "<group>"; };
@@ -935,6 +922,42 @@
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		5F5A94801C25E48600659724 /* SD */ = {
+			isa = PBXGroup;
+			children = (
+				5F5A94811C25E49600659724 /* src */,
+			);
+			name = SD;
+			sourceTree = "<group>";
+		};
+		5F5A94811C25E49600659724 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				5F5A94851C25E4B100659724 /* utility */,
+				5F5A94821C25E4AC00659724 /* File.cpp */,
+				5F5A94831C25E4AC00659724 /* SD.cpp */,
+				5F5A94841C25E4AC00659724 /* SD.h */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+		5F5A94851C25E4B100659724 /* utility */ = {
+			isa = PBXGroup;
+			children = (
+				5F5A94861C25E4D000659724 /* FatStructs.h */,
+				5F5A94871C25E4D000659724 /* Sd2Card.cpp */,
+				5F5A94881C25E4D000659724 /* Sd2Card.h */,
+				5F5A94891C25E4D000659724 /* Sd2PinMap.h */,
+				5F5A948A1C25E4D000659724 /* SdFat.h */,
+				5F5A948B1C25E4D000659724 /* SdFatmainpage.h */,
+				5F5A948C1C25E4D000659724 /* SdFatUtil.h */,
+				5F5A948D1C25E4D000659724 /* SdFile.cpp */,
+				5F5A948E1C25E4D000659724 /* SdInfo.h */,
+				5F5A948F1C25E4D000659724 /* SdVolume.cpp */,
+			);
+			name = utility;
+			sourceTree = "<group>";
+		};
 		5FD53CE11C159C1000256CC6 = {
 			isa = PBXGroup;
 			children = (
@@ -1392,7 +1415,7 @@
 				AAAA151207110813AA0000DD /* Robot_Control */,
 				AAAA151207110813AA00010A /* Robot_Motor */,
 				AAAA151207110813AA000114 /* RobotIRremote */,
-				AAAA151207110813AA00011C /* SD */,
+				5F5A94801C25E48600659724 /* SD */,
 				AAAA151207110813AA00012C /* Servo */,
 				AAAA151207110813AA000138 /* SpacebrewYun */,
 				AAAA151207110813AA00013C /* Stepper */,
@@ -1723,42 +1746,6 @@
 				AAAA151207110813AA00011B /* IRremoteTools.h */,
 			);
 			path = src;
-			sourceTree = "<group>";
-		};
-		AAAA151207110813AA00011C /* SD */ = {
-			isa = PBXGroup;
-			children = (
-				AAAA151207110813AA00011D /* src */,
-			);
-			path = SD;
-			sourceTree = "<group>";
-		};
-		AAAA151207110813AA00011D /* src */ = {
-			isa = PBXGroup;
-			children = (
-				AAAA151207110813AA00011E /* File.cpp */,
-				AAAA151207110813AA00011F /* SD.cpp */,
-				AAAA151207110813AA000120 /* SD.h */,
-				AAAA151207110813AA000121 /* utility */,
-			);
-			path = src;
-			sourceTree = "<group>";
-		};
-		AAAA151207110813AA000121 /* utility */ = {
-			isa = PBXGroup;
-			children = (
-				AAAA151207110813AA000122 /* FatStructs.h */,
-				AAAA151207110813AA000123 /* Sd2Card.cpp */,
-				AAAA151207110813AA000124 /* Sd2Card.h */,
-				AAAA151207110813AA000125 /* Sd2PinMap.h */,
-				AAAA151207110813AA000126 /* SdFat.h */,
-				AAAA151207110813AA000127 /* SdFatmainpage.h */,
-				AAAA151207110813AA000128 /* SdFatUtil.h */,
-				AAAA151207110813AA000129 /* SdFile.cpp */,
-				AAAA151207110813AA00012A /* SdInfo.h */,
-				AAAA151207110813AA00012B /* SdVolume.cpp */,
-			);
-			path = utility;
 			sourceTree = "<group>";
 		};
 		AAAA151207110813AA00012C /* Servo */ = {
@@ -2664,19 +2651,6 @@
 				AA2A151207110813AA000119 /* IRremoteInt.h in Sources */,
 				AA2A151207110813AA00011A /* IRremoteTools.cpp in Sources */,
 				AA2A151207110813AA00011B /* IRremoteTools.h in Sources */,
-				AA2A151207110813AA00011E /* File.cpp in Sources */,
-				AA2A151207110813AA00011F /* SD.cpp in Sources */,
-				AA2A151207110813AA000120 /* SD.h in Sources */,
-				AA2A151207110813AA000122 /* FatStructs.h in Sources */,
-				AA2A151207110813AA000123 /* Sd2Card.cpp in Sources */,
-				AA2A151207110813AA000124 /* Sd2Card.h in Sources */,
-				AA2A151207110813AA000125 /* Sd2PinMap.h in Sources */,
-				AA2A151207110813AA000126 /* SdFat.h in Sources */,
-				AA2A151207110813AA000127 /* SdFatmainpage.h in Sources */,
-				AA2A151207110813AA000128 /* SdFatUtil.h in Sources */,
-				AA2A151207110813AA000129 /* SdFile.cpp in Sources */,
-				AA2A151207110813AA00012A /* SdInfo.h in Sources */,
-				AA2A151207110813AA00012B /* SdVolume.cpp in Sources */,
 				AA2A151207110813AA00012F /* Servo.cpp in Sources */,
 				AA2A151207110813AA000130 /* ServoTimers.h in Sources */,
 				AA2A151207110813AA000132 /* Servo.cpp in Sources */,
@@ -2836,7 +2810,7 @@
 /* Begin XCBuildConfiguration section */
 		5FD53D751C159C1000256CC6 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5FD53D0C1C159C1000256CC6 /* Arduino Uno.xcconfig */;
+			baseConfigurationReference = 5FD53D021C159C1000256CC6 /* Arduino Mega 2560.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";

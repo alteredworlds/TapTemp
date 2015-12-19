@@ -48,7 +48,7 @@
 
 // Include application, user and local libraries
 #include <SPI.h>
-#include <SdFat.h>
+#include <SD.h>
 #include <RBL_nRF8001.h>
 
 #include <Wire.h>
@@ -57,8 +57,6 @@
 
 // Prototypes
 //==============================================================================
-// Error messages stored in flash.
-#define error(msg) sd.errorHalt(msg)
 
 
 // Define variables and constants
@@ -82,12 +80,13 @@ const uint32_t MAX_LOG_INTERVAL_uS = 3600 * 1000000;
 const uint16_t MIN_ANALOG_DELTA = 1;
 
 #define FILE_CURRENT_NAME "current.csv"
+
 //------------------------------------------------------------------------------
-// File system object.
-SdFat sd;
+// set up variables using the SD utility library functions:
+//Sd2Card sd;
 
 // Log file.
-SdFile file;
+File file;
 
 // Time in micros for next data record.
 uint32_t logTime = 0;
@@ -143,7 +142,7 @@ uint32_t getTime() {
 //    (big enough delta reading OR time interval)
 boolean logIfAppropriate() {
     boolean writeData = false;
-    if (file.isOpen()) {
+    if (file) {
         uint16_t data[ANALOG_COUNT];
         
         // Current time in micros
@@ -181,10 +180,10 @@ boolean logIfAppropriate() {
                     }
                     
                     // DEBUG output
-//                    Serial.print(F("Old value: "));
-//                    Serial.print(recordedData[i]);
-//                    Serial.print(F("  New value: "));
-//                    Serial.println(data[i]);
+                    //                    Serial.print(F("Old value: "));
+                    //                    Serial.print(recordedData[i]);
+                    //                    Serial.print(F("  New value: "));
+                    //                    Serial.println(data[i]);
                     break;
                 }
             }
@@ -217,12 +216,9 @@ boolean logIfAppropriate() {
                 file.println();
                 
                 // Force data to SD and update the directory entry to avoid data loss.
-                if (!file.sync() || file.getWriteError()) {
-                    error(F("write error"));
-                } else {
-                    // all OK: update last logged time
-                    logTime = currentTime;
-                }
+                file.flush();
+                // all OK: update last logged time
+                logTime = currentTime;
                 if (ble_connected()) {
                     Serial.println(F("Writing data to active BLE connection..."));
                     ble_write_bytes((byte *)&rtcTime, 4);
@@ -239,8 +235,11 @@ boolean logIfAppropriate() {
 
 void openFile() {
     // Always write to current.csv, but may need to roll
-    if (!file.open(FILE_CURRENT_NAME, O_CREAT | O_APPEND | O_WRITE)) {
-        error(F("file.open"));
+    file = SD.open(FILE_CURRENT_NAME, O_CREAT | O_APPEND | O_WRITE);
+    //!file.open(FILE_CURRENT_NAME, O_CREAT | O_APPEND | O_WRITE)
+    if (!file) {
+        Serial.println(F("file.open"));
+        while (1) {;}
     }
     do {
         delay(10);
@@ -254,9 +253,7 @@ void logToFile(const __FlashStringHelper *ifsh) {
     file.print(getTime());
     file.print(" ");
     file.println(ifsh);
-    if (!file.sync() || file.getWriteError()) {
-        error(F("write error"));
-    }
+    file.flush();
 }
 
 boolean handleBleCommands() {
@@ -271,39 +268,39 @@ boolean handleBleCommands() {
         
         retVal = true; // we have handled a command
         
-        // Parse data here
-        switch (cmd) {
-            case 'O': {
-                if (!file.isOpen()) {
-                    openFile();
-                    
-                    // write when we opened file
-                    logToFile(F("Opened file"));
-                    
-                    // DEBUG output
-                    Serial.println(F("Opened file"));
-                } else {
-                    Serial.println(F("File already open"));
-                }
-                break;
-            }
-            
-            case 'C': {
-                if (file.isOpen()) {
-                    // record this close file command
-                    logToFile(F("Closed file"));
-                    
-                    // we can now close the file
-                    file.close();
-                    
-                    // DEBUG output
-                    Serial.println(F("Closed file"));
-                } else {
-                    Serial.println(F("File already closed"));
-                }
-            }
-            break;
-        }
+//        // Parse data here
+//        switch (cmd) {
+//            case 'O': {
+//                if (!file.isOpen()) {
+//                    openFile();
+//                    
+//                    // write when we opened file
+//                    logToFile(F("Opened file"));
+//                    
+//                    // DEBUG output
+//                    Serial.println(F("Opened file"));
+//                } else {
+//                    Serial.println(F("File already open"));
+//                }
+//                break;
+//            }
+//            
+//            case 'C': {
+//                if (file.isOpen()) {
+//                    // record this close file command
+//                    logToFile(F("Closed file"));
+//                    
+//                    // we can now close the file
+//                    file.close();
+//                    
+//                    // DEBUG output
+//                    Serial.println(F("Closed file"));
+//                } else {
+//                    Serial.println(F("File already closed"));
+//                }
+//            }
+//            break;
+//        }
     }
     return retVal;
 }
@@ -314,6 +311,10 @@ void setup() {
     Serial.begin(9600);
     while (!Serial) {} // wait for Leonardo
     delay(1000);
+    
+    // make sure that the default chip select pin is set to
+    // output, even if you don't use it:
+    pinMode(SS, OUTPUT);
     
     Wire.begin();
     RTC.begin();
@@ -326,8 +327,10 @@ void setup() {
 
     // Initialize the SD card at SPI_HALF_SPEED to avoid bus errors with
     // breadboards.  use SPI_FULL_SPEED for better performance.
-    if (!sd.begin(chipSelect, SPI_HALF_SPEED)) {
-        sd.initErrorHalt();
+    if (!SD.begin(10, 11, 12, 13)) {
+        Serial.println("Card failed, or not present");
+        // don't do anything more:
+        while (1) ;
     }
     
     // most recent file open, please...
