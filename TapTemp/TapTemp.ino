@@ -58,17 +58,16 @@
 // Prototypes
 //==============================================================================
 
+// see: http://forum.arduino.cc/index.php?topic=48882.0
+union U {
+    uint32_t unixTime;
+    uint8_t   data[4];
+};
 
 // Define variables and constants
 
 // SD chip select pin.  Be sure to disable any other SPI devices such as Enet.
 const uint8_t chipSelect = SS;
-
-// Interval between data records in milliseconds.
-// The interval must be greater than the maximum SD write latency plus the
-// time to acquire and write data to the SD to avoid overrun errors.
-// Run the bench example to check the quality of your SD card.
-const uint32_t SAMPLE_INTERVAL_MS = 200;
 
 // want at least 1s between analog reads
 const uint32_t MIN_ANALOG_READ_INTERVAL_uS = 1000000;
@@ -79,11 +78,7 @@ const uint32_t MAX_LOG_INTERVAL_uS = 3600 * 1000000;
 // only want to record meaningful changes in analog reading
 const uint16_t MIN_ANALOG_DELTA = 1;
 
-//------------------------------------------------------------------------------
-// set up variables using the SD utility library functions:
-//Sd2Card sd;
-
-// Log file.
+// Log file (SD utility library)
 File file;
 
 // Time in micros for next data record.
@@ -296,10 +291,15 @@ boolean handleBleCommands() {
         
         // Parse data here
         switch (cmd) {
-            case 'O': { // transmit all data for a specified date
+            case 'G': { // transmit all data for a specified date
                 // read the date, which should be next param
+                U date;
+                for (int idx = 0; idx < 4; idx++) {
+                    date.data[idx] = ble_read();
+                }
                 
                 // derive filename for that date
+                DateTime dt(date.unixTime);
                 
                 // open file and iterate through all lines
                 
