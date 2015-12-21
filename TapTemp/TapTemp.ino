@@ -133,27 +133,22 @@ void serialPrintTime(DateTime now) {
     Serial.print(") ");
 }
 
-void deriveFileName() {
+void deriveFileName(const DateTime& now) {
+    // capture current date information
+    lastWriteDay = now.day();
+    lastWriteMonth = now.month();
+    lastWriteYear = now.year();
+
     // find the new file name
     snprintf(fileName, sizeof(fileName), "%4d%02d%02d.csv", lastWriteYear, lastWriteMonth, lastWriteDay);
-    // mess around with the name if this file already exists - we want to write out data if at all possible.
-    if (SD.exists(fileName)) {
-        do {
-            fileName[11]--;
-        } while (SD.exists(fileName) && (fileName[11] > 97));
-        if (SD.exists(fileName)) {
-            Serial.print(F("Failed to rollover: multiple file versions already exist."));
-            while(1) {;}
-        }
-    }
 }
 
-void openFile() {
+void openFile(const DateTime& now) {
     // name the current log file
-    deriveFileName();
+    deriveFileName(now);
     
     // we expect fileName to be intialized at this point
-    Serial.println(F("Opening file: "));
+    Serial.print(F("Opening file: "));
     Serial.println(fileName);
     
     file = SD.open(fileName, O_CREAT | O_APPEND | O_WRITE);
@@ -174,18 +169,13 @@ void rollLog(const DateTime& now) {
     if (file) {
         // we have an existing file
         // close it
-        Serial.println(F("Closing log file"));
+        Serial.print(F("Closing log file: "));
+        Serial.println(fileName);
         file.close();
     }
     
-    // capture current date information
-    lastWriteDay = now.day();
-    lastWriteMonth = now.month();
-    lastWriteYear = now.year();
-    
-    
     // go for it (file will be named in openFile)
-    openFile();
+    openFile(now);
 }
 
 // Log a data record if we need to
@@ -364,7 +354,7 @@ void setup() {
     }
     
     // most recent file open, please...
-    openFile();
+    openFile(RTC.now());
     
     // Set BLE Shield name here, max. length 10
     ble_set_name("AW_TAP_01");
