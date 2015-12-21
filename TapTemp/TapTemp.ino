@@ -79,8 +79,6 @@ const uint32_t MAX_LOG_INTERVAL_uS = 3600 * 1000000;
 // only want to record meaningful changes in analog reading
 const uint16_t MIN_ANALOG_DELTA = 1;
 
-#define FILE_CURRENT_NAME "current.csv"
-
 //------------------------------------------------------------------------------
 // set up variables using the SD utility library functions:
 //Sd2Card sd;
@@ -94,6 +92,18 @@ uint32_t logTime = 0;
 // Time in micros when last sensor read occurred
 uint32_t sensorReadTime = 0;
 
+// current active file name
+char fileName[13];
+
+// RTC time when data last logged
+uint16_t lastWriteYear = 2015;
+uint8_t lastWriteMonth = 9;
+uint8_t lastWriteDay = 5;
+
+//uint16_t lastWriteYear = 0;
+//uint8_t lastWriteMonth = 0;
+//uint8_t lastWriteDay = 0;
+
 // Real Time Clock
 RTC_DS1307 RTC;
 
@@ -104,20 +114,8 @@ const uint8_t ANALOG_COUNT = 1;
 // last measured analog data
 uint16_t recordedData[ANALOG_COUNT];
 
-// Write data header.
-//void writeHeader() {
-//    file.print(F("unixtime"));
-//    for (uint8_t i = 0; i < ANALOG_COUNT; i++) {
-//        file.print(F(",adc"));
-//        file.print(i, DEC);
-//    }
-//    file.println();
-//}
 
-uint32_t getTime() {
-    DateTime now    = RTC.now();
-    uint32_t retVal = now.unixtime();
-    
+void serialPrintTime(DateTime now) {
     // DEBUG output
     Serial.print(now.year(), DEC);
     Serial.print('/');
@@ -131,12 +129,64 @@ uint32_t getTime() {
     Serial.print(':');
     Serial.print(now.second(), DEC);
     Serial.print(" (");
-    Serial.print(retVal);
+    Serial.print(now.unixtime());
     Serial.print(") ");
-    
-    return retVal;
 }
 
+void deriveFileName() {
+    // find the new file name
+    snprintf(fileName, sizeof(fileName), "%4d%02d%02d.csv", lastWriteYear, lastWriteMonth, lastWriteDay);
+    // mess around with the name if this file already exists - we want to write out data if at all possible.
+    if (SD.exists(fileName)) {
+        do {
+            fileName[11]--;
+        } while (SD.exists(fileName) && (fileName[11] > 97));
+        if (SD.exists(fileName)) {
+            Serial.print(F("Failed to rollover: multiple file versions already exist."));
+            while(1) {;}
+        }
+    }
+}
+
+void openFile() {
+    // name the current log file
+    deriveFileName();
+    
+    // we expect fileName to be intialized at this point
+    Serial.println(F("Opening file: "));
+    Serial.println(fileName);
+    
+    file = SD.open(fileName, O_CREAT | O_APPEND | O_WRITE);
+    if (!file) {
+        Serial.println(F("file.open"));
+        while (1) {;}
+    }
+    do {
+        delay(10);
+    } while (Serial.read() >= 0);
+    
+    Serial.print(F("Logging to: "));
+    Serial.println(fileName);
+}
+
+void rollLog(const DateTime& now) {
+    // close any existing log file
+    if (file) {
+        // we have an existing file
+        // close it
+        Serial.println(F("Closing log file"));
+        file.close();
+    }
+    
+    // capture current date information
+    lastWriteDay = now.day();
+    lastWriteMonth = now.month();
+    lastWriteYear = now.year();
+    
+    
+    // go for it (file will be named in openFile)
+    openFile();
+}
 
 // Log a data record if we need to
 //    (big enough delta reading OR time interval)
@@ -163,6 +213,9 @@ boolean logIfAppropriate() {
                 analogRead(i);              // select correct channel
                 delay(5);
                 data[i] = analogRead(i);    // we should now get an accurate reading
+                if (ANALOG_COUNT > 1) {
+                    delay(5);
+                }
             }
             // compare with most recent recorded values - if the data has changed sufficiently
             // in any channel we need to write a log record
@@ -192,15 +245,18 @@ boolean logIfAppropriate() {
             //  OR long time since last write & time to prove 'alive'
             writeData = (writeData || ((currentTime - logTime) >= MAX_LOG_INTERVAL_uS));
             if (writeData) {
-                // DEBUG output
-                Serial.print(F("  Logging: "));
+                DateTime now = RTC.now();
+                if (lastWriteDay && (now.day() != lastWriteDay)) {
+                    rollLog(now);
+                }
                 
                 // write the time derived from RTC
-                uint32_t rtcTime = getTime();
+                uint32_t rtcTime = now.unixtime();
                 file.print(rtcTime);
                 
                 // DEBUG output
-                Serial.print(F(" "));
+                Serial.print(F("  Logging: "));
+                serialPrintTime(now);
                 
                 // Write ADC data to CSV record.
                 for (i = 0; i < ANALOG_COUNT; i++) {
@@ -217,9 +273,12 @@ boolean logIfAppropriate() {
                 
                 // Force data to SD and update the directory entry to avoid data loss.
                 file.flush();
+                
                 // all OK: update last logged time
                 logTime = currentTime;
+
                 if (ble_connected()) {
+                    // we have an active bluetooth le connection, so inform client of change
                     Serial.println(F("Writing data to active BLE connection..."));
                     ble_write_bytes((byte *)&rtcTime, 4);
                     for (i = 0; i < ANALOG_COUNT; i++) {
@@ -231,29 +290,6 @@ boolean logIfAppropriate() {
         }
     }
     return writeData;
-}
-
-void openFile() {
-    // Always write to current.csv, but may need to roll
-    file = SD.open(FILE_CURRENT_NAME, O_CREAT | O_APPEND | O_WRITE);
-    //!file.open(FILE_CURRENT_NAME, O_CREAT | O_APPEND | O_WRITE)
-    if (!file) {
-        Serial.println(F("file.open"));
-        while (1) {;}
-    }
-    do {
-        delay(10);
-    } while (Serial.read() >= 0);
-    
-    Serial.print(F("Logging to: "));
-    Serial.println(FILE_CURRENT_NAME);
-}
-
-void logToFile(const __FlashStringHelper *ifsh) {
-    file.print(getTime());
-    file.print(" ");
-    file.println(ifsh);
-    file.flush();
 }
 
 boolean handleBleCommands() {
@@ -274,9 +310,6 @@ boolean handleBleCommands() {
 //                if (!file.isOpen()) {
 //                    openFile();
 //                    
-//                    // write when we opened file
-//                    logToFile(F("Opened file"));
-//                    
 //                    // DEBUG output
 //                    Serial.println(F("Opened file"));
 //                } else {
@@ -287,9 +320,6 @@ boolean handleBleCommands() {
 //            
 //            case 'C': {
 //                if (file.isOpen()) {
-//                    // record this close file command
-//                    logToFile(F("Closed file"));
-//                    
 //                    // we can now close the file
 //                    file.close();
 //                    
@@ -336,9 +366,6 @@ void setup() {
     // most recent file open, please...
     openFile();
     
-    // Write data header.
-    //writeHeader();
-    
     // Set BLE Shield name here, max. length 10
     ble_set_name("AW_TAP_01");
 
@@ -346,7 +373,7 @@ void setup() {
     ble_begin();
     
     // set data to zero (necessary?)
-    for (uint16_t i = 0; i < ANALOG_COUNT; i++) {
+    for (uint8_t i = 0; i < ANALOG_COUNT; i++) {
         recordedData[i] = 0;
     }
     
