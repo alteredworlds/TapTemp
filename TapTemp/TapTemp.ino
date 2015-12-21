@@ -294,33 +294,25 @@ boolean handleBleCommands() {
         
         retVal = true; // we have handled a command
         
-//        // Parse data here
-//        switch (cmd) {
-//            case 'O': {
-//                if (!file.isOpen()) {
-//                    openFile();
-//                    
-//                    // DEBUG output
-//                    Serial.println(F("Opened file"));
-//                } else {
-//                    Serial.println(F("File already open"));
-//                }
-//                break;
-//            }
-//            
-//            case 'C': {
-//                if (file.isOpen()) {
-//                    // we can now close the file
-//                    file.close();
-//                    
-//                    // DEBUG output
-//                    Serial.println(F("Closed file"));
-//                } else {
-//                    Serial.println(F("File already closed"));
-//                }
-//            }
-//            break;
-//        }
+        // Parse data here
+        switch (cmd) {
+            case 'O': { // transmit all data for a specified date
+                // read the date, which should be next param
+                
+                // derive filename for that date
+                
+                // open file and iterate through all lines
+                
+                // read timestamp, analog_data[#] from each line
+                
+                // send via existing ble mechanism
+                break;
+            }
+                
+            default:
+                Serial.print(F("Command not recognised"));
+                break;
+        }
     }
     return retVal;
 }
