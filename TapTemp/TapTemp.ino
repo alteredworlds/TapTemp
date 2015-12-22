@@ -351,9 +351,12 @@ boolean handleBleCommands() {
             case 'G': { // transmit all data for a specified date
                 // read the date, which should be next param
                 U date;
-                for (int idx = 0; idx < 4; idx++) {
+                for (int idx = 3; idx >= 0; idx--) {
                     date.data[idx] = ble_read();
                 }
+                
+                Serial.print(F("Received unixdate: "));
+                Serial.println(date.unixTime);
                 
                 // derive filename for that date
                 DateTime dt(date.unixTime);
