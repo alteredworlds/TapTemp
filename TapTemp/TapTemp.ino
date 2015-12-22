@@ -109,6 +109,33 @@ const uint8_t ANALOG_COUNT = 1;
 // last measured analog data
 uint16_t recordedData[ANALOG_COUNT];
 
+bool readLine(File &f, char* line, size_t maxLen) {
+    for (size_t n = 0; n < maxLen; n++) {
+        int c = f.read();
+        if ( c < 0 && n == 0) return false;  // EOF
+        if (c < 0 || c == '\n') {
+            line[n] = 0;
+            return true;
+        }
+        line[n] = c;
+    }
+    return false; // line too long
+}
+
+// for now just reads a SINGLE analog data record
+bool readRecord(long* v1, uint16_t* v2) {
+    char line[40], *ptr, *str;
+    if (!readLine(file, line, sizeof(line))) {
+        return false;  // EOF or too long
+    }
+    *v1 = strtol(line, &ptr, 10);
+    if (ptr == line) return false;  // bad number if equal
+    while (*ptr) {
+        if (*ptr++ == ',') break;
+    }
+    *v2 = (uint16_t)strtol(ptr, &str, 10);
+    return str != ptr;  // true if number found
+}
 
 void serialPrintTime(DateTime now) {
     // DEBUG output
@@ -128,19 +155,37 @@ void serialPrintTime(DateTime now) {
     Serial.print(") ");
 }
 
-void deriveFileName(const DateTime& now) {
+void openFileForRead(char* fileName) {
+    // we expect fileName to be intialized at this point
+    Serial.print(F("Opening file: "));
+    Serial.println(fileName);
+    
+    file = SD.open(fileName, O_READ);
+    if (!file) {
+        Serial.println(F("Failed to open file"));
+    } else {
+        do {
+            delay(10);
+        } while (Serial.read() >= 0);
+        
+        Serial.print(F("Opened file: "));
+        Serial.println(fileName);
+    }
+}
+
+void deriveFileName(char* buf, int8_t bufSize, const DateTime& now) {
+    // find the new file name
+    snprintf(buf, bufSize, "%4d%02d%02d.csv", now.year(), now.month(), now.day());
+}
+
+void openFileForWrite(const DateTime& now) {
     // capture current date information
     lastWriteDay = now.day();
     lastWriteMonth = now.month();
     lastWriteYear = now.year();
-
-    // find the new file name
-    snprintf(fileName, sizeof(fileName), "%4d%02d%02d.csv", lastWriteYear, lastWriteMonth, lastWriteDay);
-}
-
-void openFile(const DateTime& now) {
+    
     // name the current log file
-    deriveFileName(now);
+    deriveFileName(fileName, sizeof(fileName), now);
     
     // we expect fileName to be intialized at this point
     Serial.print(F("Opening file: "));
@@ -159,18 +204,22 @@ void openFile(const DateTime& now) {
     Serial.println(fileName);
 }
 
-void rollLog(const DateTime& now) {
-    // close any existing log file
+void closeFile() {
     if (file) {
         // we have an existing file
         // close it
         Serial.print(F("Closing log file: "));
-        Serial.println(fileName);
+        Serial.println(file.name());
         file.close();
     }
+}
+
+void rollLog(const DateTime& now) {
+    // close any existing log file
+    closeFile();
     
-    // go for it (file will be named in openFile)
-    openFile(now);
+    // go for it (file will be named in openFileForWrite)
+    openFileForWrite(now);
 }
 
 // Log a data record if we need to
@@ -301,11 +350,27 @@ boolean handleBleCommands() {
                 // derive filename for that date
                 DateTime dt(date.unixTime);
                 
+                // close our open log file
+                closeFile();
+                
+                // grab filename for supplied date
+                char requestedFileName[13];
+                deriveFileName(requestedFileName, sizeof(requestedFileName), dt);
+                
                 // open file and iterate through all lines
+                openFileForRead(requestedFileName);
                 
                 // read timestamp, analog_data[#] from each line
+                long unixTimestamp;
+                
+                readRecord(long* v1, uint16_t* v2)
                 
                 // send via existing ble mechanism
+                
+                // close the file
+                closeFile();
+                
+                // now re-open the log file
                 break;
             }
                 
@@ -346,7 +411,7 @@ void setup() {
     }
     
     // most recent file open, please...
-    openFile(RTC.now());
+    openFileForWrite(RTC.now());
     
     // Set BLE Shield name here, max. length 10
     ble_set_name("AW_TAP_01");
