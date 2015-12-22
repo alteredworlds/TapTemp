@@ -155,7 +155,8 @@ void serialPrintTime(DateTime now) {
     Serial.print(") ");
 }
 
-void openFileForRead(char* fileName) {
+boolean openFileForRead(char* fileName) {
+    boolean retVal = false;
     // we expect fileName to be intialized at this point
     Serial.print(F("Opening file: "));
     Serial.println(fileName);
@@ -170,7 +171,9 @@ void openFileForRead(char* fileName) {
         
         Serial.print(F("Opened file: "));
         Serial.println(fileName);
+        retVal = true;
     }
+    return retVal;
 }
 
 void deriveFileName(char* buf, int8_t bufSize, const DateTime& now) {
@@ -220,6 +223,18 @@ void rollLog(const DateTime& now) {
     
     // go for it (file will be named in openFileForWrite)
     openFileForWrite(now);
+}
+
+void bleWriteData(uint32_t rtcTime, uint16_t* data) {
+    if (ble_connected()) {
+        // we have an active bluetooth le connection, so inform client of change
+        Serial.println(F("Writing data to active BLE connection..."));
+        ble_write_bytes((byte *)&rtcTime, 4);
+        for (int8_t i = 0; i < ANALOG_COUNT; i++) {
+            ble_write_bytes((byte *)&data[i], 2);
+        }
+        
+    }
 }
 
 // Log a data record if we need to
@@ -311,15 +326,8 @@ boolean logIfAppropriate() {
                 // all OK: update last logged time
                 logTime = currentTime;
 
-                if (ble_connected()) {
-                    // we have an active bluetooth le connection, so inform client of change
-                    Serial.println(F("Writing data to active BLE connection..."));
-                    ble_write_bytes((byte *)&rtcTime, 4);
-                    for (i = 0; i < ANALOG_COUNT; i++) {
-                        ble_write_bytes((byte *)&recordedData[i], 2);
-                    }
-                    
-                }
+                // write the data to any connected BLE devices
+                bleWriteData(rtcTime, recordedData);
             }
         }
     }
@@ -357,20 +365,24 @@ boolean handleBleCommands() {
                 char requestedFileName[13];
                 deriveFileName(requestedFileName, sizeof(requestedFileName), dt);
                 
-                // open file and iterate through all lines
-                openFileForRead(requestedFileName);
-                
-                // read timestamp, analog_data[#] from each line
-                long unixTimestamp;
-                
-                readRecord(long* v1, uint16_t* v2)
-                
-                // send via existing ble mechanism
-                
-                // close the file
-                closeFile();
+                // open file
+                if (openFileForRead(requestedFileName)) {                    
+                    // to hold timestamp, analog_data[#] when read from each line
+                    long unixTimestamp;
+                    uint16_t sample[ANALOG_COUNT];
+                    
+                    // iterate over every line
+                    while (readRecord(&unixTimestamp, &sample[0])) {
+                        // send valid record via existing ble mechanism
+                        bleWriteData(unixTimestamp, sample);
+                    }
+                    
+                    // close the file
+                    closeFile();
+                }
                 
                 // now re-open the log file
+                openFileForWrite(RTC.now());
                 break;
             }
                 
