@@ -378,6 +378,7 @@ boolean handleBleCommands() {
                     while (readRecord(&unixTimestamp, &sample[0])) {
                         // send valid record via existing ble mechanism
                         bleWriteData(unixTimestamp, sample);
+                        ble_do_events();
                     }
                     
                     // close the file
