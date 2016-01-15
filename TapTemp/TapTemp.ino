@@ -54,6 +54,9 @@
 #include <Wire.h>
 #include <RTCLib.h>
 
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
 
 // Prototypes
 //==============================================================================
@@ -99,15 +102,26 @@ uint8_t lastWriteDay = 5;
 //uint8_t lastWriteMonth = 0;
 //uint8_t lastWriteDay = 0;
 
+
+// Data wire is plugged into port 34 on the Arduino Mega
+#define ONE_WIRE_BUS 34
+#define DALLAS_GND_PIN 32
+#define DALLAS_HI_PIN 36
+
+// Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
+OneWire oneWire(ONE_WIRE_BUS);
+
+// Pass our oneWire reference to Dallas Temperature.
+DallasTemperature sensors(&oneWire);
+
 // Real Time Clock
 RTC_DS1307 RTC;
 
-
-// we have only a single temperature probe right now...
-const uint8_t ANALOG_COUNT = 1;
+// expected number of temperature sensors
+const uint8_t SENSOR_COUNT = 1;
 
 // last measured analog data
-uint16_t recordedData[ANALOG_COUNT];
+uint16_t recordedData[SENSOR_COUNT];
 
 bool readLine(File &f, char* line, size_t maxLen) {
     for (size_t n = 0; n < maxLen; n++) {
@@ -230,10 +244,29 @@ void bleWriteData(uint32_t rtcTime, uint16_t* data) {
         // we have an active bluetooth le connection, so inform client of change
         Serial.println(F("Writing data to active BLE connection..."));
         ble_write_bytes((byte *)&rtcTime, 4);
-        for (int8_t i = 0; i < ANALOG_COUNT; i++) {
+        for (int8_t i = 0; i < SENSOR_COUNT; i++) {
             ble_write_bytes((byte *)&data[i], 2);
         }
         
+    }
+}
+
+void readTemperatureSensors(uint16_t* data) {
+    uint8_t i;
+    uint16_t tmp;
+    for (i = 0; i < SENSOR_COUNT; i++) {
+        // read twice see final comment by tuxdino: http://forum.arduino.cc/index.php?topic=6261.15
+        // Arduino analogRead() seems to combine channel selection & read, but 50us delay btwn required
+        analogRead(i);              // select correct channel
+        tmp = 0;
+        for (uint8_t j = 0; j < 10; j++) {
+            delay(20);
+            tmp += analogRead(i);    // we should now get an accurate reading
+        }
+        data[i] = tmp / 10;
+        if (SENSOR_COUNT > 1) {
+            delay(20);
+        }
     }
 }
 
@@ -242,34 +275,41 @@ void bleWriteData(uint32_t rtcTime, uint16_t* data) {
 boolean logIfAppropriate() {
     boolean writeData = false;
     if (file) {
-        uint16_t data[ANALOG_COUNT];
+        uint16_t data[SENSOR_COUNT];
         
         // Current time in micros
         uint32_t currentTime = micros();
         
         // delta since last sensor reading was taken big enough to measure again?
         if ((currentTime - sensorReadTime) > MIN_ANALOG_READ_INTERVAL_uS) {
-            // OK, time to take a reading from the analog sensor(s)
+            // OK, time to take a reading from the temperature sensor(s)
             sensorReadTime = currentTime;
             
             // DEBUG output
             //Serial.println(F("Reading analog sensor(s)..."));
             
-            uint8_t i;
-            for (i = 0; i < ANALOG_COUNT; i++) {
-                // read twice see final comment by tuxdino: http://forum.arduino.cc/index.php?topic=6261.15
-                // Arduino analogRead() seems to combine channel selection & read, but 50us delay btwn required
-                analogRead(i);              // select correct channel
-                delay(5);
-                data[i] = analogRead(i);    // we should now get an accurate reading
-                if (ANALOG_COUNT > 1) {
-                    delay(5);
-                }
-            }
+            readTemperatureSensors(data);
+            
+//            uint16_t tmp;
+//            for (i = 0; i < SENSOR_COUNT; i++) {
+//                // read twice see final comment by tuxdino: http://forum.arduino.cc/index.php?topic=6261.15
+//                // Arduino analogRead() seems to combine channel selection & read, but 50us delay btwn required
+//                analogRead(i);              // select correct channel
+//                tmp = 0;
+//                for (uint8_t j = 0; j < 10; j++) {
+//                    delay(20);
+//                    tmp += analogRead(i);    // we should now get an accurate reading
+//                }
+//                data[i] = tmp / 10;
+//                if (SENSOR_COUNT > 1) {
+//                    delay(20);
+//                }
+//            }
             // compare with most recent recorded values - if the data has changed sufficiently
             // in any channel we need to write a log record
+            uint8_t i;
             uint16_t diff;
-            for (i = 0; i < ANALOG_COUNT; i++) {
+            for (i = 0; i < SENSOR_COUNT; i++) {
                 diff = recordedData[i] > data[i] ? recordedData[i] - data[i] : data[i] - recordedData[i];
                 writeData = (diff > MIN_ANALOG_DELTA);
                 if (writeData) {
@@ -277,7 +317,7 @@ boolean logIfAppropriate() {
                     // => entire record must be written
                     
                     // update the recorded values
-                    for (i = 0; i < ANALOG_COUNT; i++) {
+                    for (i = 0; i < SENSOR_COUNT; i++) {
                         recordedData[i] = data[i];
                     }
                     
@@ -308,7 +348,7 @@ boolean logIfAppropriate() {
                 serialPrintTime(now);
                 
                 // Write ADC data to CSV record.
-                for (i = 0; i < ANALOG_COUNT; i++) {
+                for (i = 0; i < SENSOR_COUNT; i++) {
                     file.write(',');
                     file.print(data[i]);
                     
@@ -372,7 +412,7 @@ boolean handleBleCommands() {
                 if (openFileForRead(requestedFileName)) {                    
                     // to hold timestamp, analog_data[#] when read from each line
                     long unixTimestamp;
-                    uint16_t sample[ANALOG_COUNT];
+                    uint16_t sample[SENSOR_COUNT];
                     
                     // iterate over every line
                     while (readRecord(&unixTimestamp, &sample[0])) {
@@ -405,9 +445,17 @@ void setup() {
     while (!Serial) {} // wait for Leonardo
     delay(1000);
     
-    // make sure that the default chip select pin is set to
-    // output, even if you don't use it:
+    // make sure that the default chip select pin is set to output, even if you don't use it
     pinMode(SS, OUTPUT);
+    
+    // So we can plug a DS18B20 directly into digitial pins GND_PIN, [ONE_WIRE_BUS,] HI_PIN.
+    digitalWrite( DALLAS_GND_PIN , LOW );
+    pinMode( DALLAS_GND_PIN  , OUTPUT );
+    digitalWrite( DALLAS_HI_PIN , LOW );
+    pinMode( DALLAS_HI_PIN , OUTPUT );
+    
+    // reset the sensor bus
+    sensors.begin();
     
     Wire.begin();
     RTC.begin();
@@ -418,8 +466,7 @@ void setup() {
         RTC.adjust(DateTime(__DATE__, __TIME__));
     }
 
-    // Initialize the SD card at SPI_HALF_SPEED to avoid bus errors with
-    // breadboards.  use SPI_FULL_SPEED for better performance.
+    // Initialize the SD card.
     if (!SD.begin(10, 11, 12, 13)) {
         Serial.println("Card failed, or not present");
         // don't do anything more:
@@ -436,7 +483,7 @@ void setup() {
     ble_begin();
     
     // set data to zero (necessary?)
-    for (uint8_t i = 0; i < ANALOG_COUNT; i++) {
+    for (uint8_t i = 0; i < SENSOR_COUNT; i++) {
         recordedData[i] = 0;
     }
     
