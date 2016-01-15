@@ -73,13 +73,14 @@ union U {
 const uint8_t chipSelect = SS;
 
 // want at least 1s between analog reads
-const uint32_t MIN_ANALOG_READ_INTERVAL_uS = 1000000;
+const uint32_t MIN_TEMPERATURE_READ_INTERVAL_uS = 1000000;
 
 // want at least 1 record per 60 mins to demonstrate 'alive'
 const uint32_t MAX_LOG_INTERVAL_uS = 3600 * 1000000;
 
-// only want to record meaningful changes in analog reading
-const uint16_t MIN_ANALOG_DELTA = 1;
+// only want to record meaningful changes in temperature reading
+// NOTE temps stored as C * 100 eg 23.19C as 2319
+const uint16_t MIN_TEMPERATURE_DELTA = 50;
 
 // Log file (SD utility library)
 File file;
@@ -252,20 +253,45 @@ void bleWriteData(uint32_t rtcTime, uint16_t* data) {
 }
 
 void readTemperatureSensors(uint16_t* data) {
-    uint8_t i;
-    uint16_t tmp;
-    for (i = 0; i < SENSOR_COUNT; i++) {
-        // read twice see final comment by tuxdino: http://forum.arduino.cc/index.php?topic=6261.15
-        // Arduino analogRead() seems to combine channel selection & read, but 50us delay btwn required
-        analogRead(i);              // select correct channel
-        tmp = 0;
-        for (uint8_t j = 0; j < 10; j++) {
-            delay(20);
-            tmp += analogRead(i);    // we should now get an accurate reading
-        }
-        data[i] = tmp / 10;
-        if (SENSOR_COUNT > 1) {
-            delay(20);
+    // Grab a count of devices on the wire
+    sensors.begin();
+    uint8_t numDevices = sensors.getDeviceCount();
+    
+    // DEBUG output
+//    Serial.print(F("Number of sensors detected: "));
+//    Serial.println(numDevices);
+    // END DEBUG output
+    
+    if (numDevices != SENSOR_COUNT) {
+        Serial.print(F("NOT READING since expected number of sensors is: "));
+        Serial.println(SENSOR_COUNT);
+    } else {
+        sensors.requestTemperatures(); // Send the command to get temperatures
+        
+        uint8_t i;
+        float tempC;
+        DeviceAddress tempDeviceAddress;
+        for (i = 0; i < SENSOR_COUNT; i++) {
+            if (sensors.getAddress(tempDeviceAddress, i)) {
+                // grab the temperature
+                tempC = sensors.getTempC(tempDeviceAddress);
+                
+                // DEBUG output
+                // Output the device ID
+//                Serial.print(" #");
+//                Serial.print(i, DEC);
+//                Serial.print("=");
+//                Serial.print(tempC);
+                // END DEBUG output
+                
+                tempC = tempC * 100.0;
+                data[i] = (uint16_t)(tempC + 0.5);
+                
+                // DEBUG output
+//                Serial.print(F(" storing "));
+//                Serial.println(data[i]);
+                // END DEBUG output
+            }
         }
     }
 }
@@ -281,37 +307,19 @@ boolean logIfAppropriate() {
         uint32_t currentTime = micros();
         
         // delta since last sensor reading was taken big enough to measure again?
-        if ((currentTime - sensorReadTime) > MIN_ANALOG_READ_INTERVAL_uS) {
+        if ((currentTime - sensorReadTime) > MIN_TEMPERATURE_READ_INTERVAL_uS) {
             // OK, time to take a reading from the temperature sensor(s)
             sensorReadTime = currentTime;
             
-            // DEBUG output
-            //Serial.println(F("Reading analog sensor(s)..."));
-            
             readTemperatureSensors(data);
             
-//            uint16_t tmp;
-//            for (i = 0; i < SENSOR_COUNT; i++) {
-//                // read twice see final comment by tuxdino: http://forum.arduino.cc/index.php?topic=6261.15
-//                // Arduino analogRead() seems to combine channel selection & read, but 50us delay btwn required
-//                analogRead(i);              // select correct channel
-//                tmp = 0;
-//                for (uint8_t j = 0; j < 10; j++) {
-//                    delay(20);
-//                    tmp += analogRead(i);    // we should now get an accurate reading
-//                }
-//                data[i] = tmp / 10;
-//                if (SENSOR_COUNT > 1) {
-//                    delay(20);
-//                }
-//            }
             // compare with most recent recorded values - if the data has changed sufficiently
             // in any channel we need to write a log record
             uint8_t i;
             uint16_t diff;
             for (i = 0; i < SENSOR_COUNT; i++) {
                 diff = recordedData[i] > data[i] ? recordedData[i] - data[i] : data[i] - recordedData[i];
-                writeData = (diff > MIN_ANALOG_DELTA);
+                writeData = (diff > MIN_TEMPERATURE_DELTA);
                 if (writeData) {
                     // item at index i has changed enough
                     // => entire record must be written
@@ -456,7 +464,6 @@ void setup() {
     
     // reset the sensor bus
     sensors.begin();
-    
     Wire.begin();
     RTC.begin();
     if (!RTC.isrunning()) {
