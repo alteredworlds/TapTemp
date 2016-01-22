@@ -65,7 +65,7 @@ USER_LIBS_LIST = BLE_SDK_for_Arduino RBL_nRF8001 RTClib Arduino-Temperature-Cont
 # SERIAL_BAUDRATE for the serial console, 9600 by default
 # Uncomment and specify another speed
 #
-#SERIAL_BAUDRATE = 115200
+#SERIAL_BAUDRATE = 9600
 
 
 # Miscellaneous
@@ -84,5 +84,7 @@ MAKEFILE_PATH  = $(CURRENT_DIR)/Makefiles
 UTILITIES_PATH = $(CURRENT_DIR)/Utilities
 
 include $(MAKEFILE_PATH)/Step1.mk
+
+
 
 
