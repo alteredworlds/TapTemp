@@ -106,8 +106,8 @@ uint8_t lastWriteDay = 5;
 
 // Data wire is plugged into port 34 on the Arduino Mega
 #define ONE_WIRE_BUS 34
-#define DALLAS_GND_PIN 32
-#define DALLAS_HI_PIN 36
+//#define DALLAS_GND_PIN 32
+//#define DALLAS_HI_PIN 36
 
 // Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
 OneWire oneWire(ONE_WIRE_BUS);
@@ -119,7 +119,7 @@ DallasTemperature sensors(&oneWire);
 RTC_DS1307 RTC;
 
 // expected number of temperature sensors
-const uint8_t SENSOR_COUNT = 1;
+const uint8_t SENSOR_COUNT = 3;
 
 // last measured analog data
 uint16_t recordedData[SENSOR_COUNT];
@@ -364,8 +364,9 @@ boolean logIfAppropriate() {
                     if (i > 0) {
                         Serial.print(',');
                     }
-                    Serial.println(data[i]);
+                    Serial.print(data[i]);
                 }
+                Serial.println();
                 file.println();
                 
                 // Force data to SD and update the directory entry to avoid data loss.
@@ -457,10 +458,10 @@ void setup() {
     pinMode(SS, OUTPUT);
     
     // So we can plug a DS18B20 directly into digitial pins GND_PIN, [ONE_WIRE_BUS,] HI_PIN.
-    digitalWrite( DALLAS_GND_PIN , LOW );
-    pinMode( DALLAS_GND_PIN  , OUTPUT );
-    digitalWrite( DALLAS_HI_PIN , LOW );
-    pinMode( DALLAS_HI_PIN , OUTPUT );
+    //digitalWrite( DALLAS_GND_PIN , LOW );
+    //pinMode( DALLAS_GND_PIN  , OUTPUT );
+    //digitalWrite( DALLAS_HI_PIN , LOW );
+    //pinMode( DALLAS_HI_PIN , OUTPUT );
     
     // reset the sensor bus
     sensors.begin();
