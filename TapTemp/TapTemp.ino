@@ -137,19 +137,44 @@ bool readLine(File &f, char* line, size_t maxLen) {
     return false; // line too long
 }
 
-// for now just reads a SINGLE analog data record
-bool readRecord(long* v1, uint16_t* v2) {
-    char line[40], *ptr, *str;
-    if (!readLine(file, line, sizeof(line))) {
-        return false;  // EOF or too long
+bool readTemperature(char** start, uint16_t* val) {
+    char* str = *start;
+    char* end;
+    // we expect each temperature to match pattern (excluding quotes):
+    // " ,12345"
+    // so first part is zero or more alpha chars then ','
+    // followed immediately afterwards by a long
+    while (*str) {
+        if (*str++ == ',') break;
     }
-    *v1 = strtol(line, &ptr, 10);
-    if (ptr == line) return false;  // bad number if equal
-    while (*ptr) {
-        if (*ptr++ == ',') break;
+    *val = strtol(str, &end, 10);
+    bool retVal = end != str; // bad number if equal
+    if (retVal) {
+        // we need to return the end of this temperature
+        *start = end;
     }
-    *v2 = (uint16_t)strtol(ptr, &str, 10);
-    return str != ptr;  // true if number found
+    return retVal;
+}
+
+// reads up to SENSOR_COUNT temperature values from each line
+bool readRecord(long* v1, uint16_t* data) {
+    bool retVal = false;
+    char line[40], *ptr;
+    if (readLine(file, line, sizeof(line))) {
+        // grab the unix time value from start of record
+        *v1 = strtol(line, &ptr, 10);
+        if (ptr != line) {
+            // we got a valid long, so now try for the temperatures
+            retVal = true;
+            for (uint8_t i = 0; i < SENSOR_COUNT; i++) {
+                retVal &= readTemperature(&ptr, &data[i]);
+                if (!retVal) {
+                    break;
+                }
+            }
+        }
+    }
+    return retVal;
 }
 
 void serialPrintTime(DateTime now) {
@@ -424,7 +449,7 @@ boolean handleBleCommands() {
                     uint16_t sample[SENSOR_COUNT];
                     
                     // iterate over every line
-                    while (readRecord(&unixTimestamp, &sample[0])) {
+                    while (readRecord(&unixTimestamp, sample)) {
                         // send valid record via existing ble mechanism
                         bleWriteData(unixTimestamp, sample);
                         ble_do_events();
