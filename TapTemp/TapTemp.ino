@@ -450,9 +450,12 @@ boolean handleBleCommands() {
                     
                     // iterate over every line
                     while (readRecord(&unixTimestamp, sample)) {
-                        // send valid record via existing ble mechanism
-                        bleWriteData(unixTimestamp, sample);
-                        ble_do_events();
+                        // we only want to send data at or after requested timestamp
+                        if (unixTimestamp >= date.unixTime) {
+                            // send valid record via existing ble mechanism
+                            bleWriteData(unixTimestamp, sample);
+                            ble_do_events();
+                        }
                     }
                     
                     // close the file
