@@ -448,14 +448,33 @@ boolean handleBleCommands() {
                     long unixTimestamp;
                     uint16_t sample[SENSOR_COUNT];
                     
-                    // iterate over every line
+                    // we want to send 2 records each time, rather than 1
+                    boolean sendNow = false;
+                    boolean dataWaiting = false;
+                    
+                    // iterate over every line in the file
                     while (readRecord(&unixTimestamp, sample)) {
                         // we only want to send data at or after requested timestamp
                         //if (unixTimestamp >= date.unixTime) {
-                            // send valid record via existing ble mechanism
-                            bleWriteData(unixTimestamp, sample);
+                        
+                        // use existing serial over ble mechanism to write to ble buffer
+                        bleWriteData(unixTimestamp, sample);
+                        if (sendNow) {
+                            // send out the buffer contents once every 2 records
                             ble_do_events();
+                            // we've now flushed all read data down the pipe
+                            dataWaiting = false;
+                        } else {
+                            // we've got some data waiting to be sent
+                            dataWaiting = true;
+                        }
+                        sendNow = !sendNow;
                         //}
+                    }
+                    // for odd number of records, we won't have sent the last record
+                    if (dataWaiting) {
+                        // read data waiting to be send, go ahead and flush it down the pipe
+                        ble_do_events();
                     }
                     
                     // close the file
